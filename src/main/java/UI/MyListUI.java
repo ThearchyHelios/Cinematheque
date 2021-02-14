@@ -1,6 +1,9 @@
+package UI;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+
 
 public class MyListUI extends DefaultListCellRenderer {
     public Component getListCellRendererComponent(JList<? extends Object> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
