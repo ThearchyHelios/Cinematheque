@@ -1,8 +1,14 @@
 package Module;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.SimpleFormatter;
 
 public class Movie {
+
 
     public static class movie_detail{
         private boolean adult;
@@ -21,6 +27,13 @@ public class Movie {
         private boolean video;
         private double vote_average;
         private int vote_count;
+
+        @Override
+        public String toString() {
+            return "Movie Name:" + title + "\n" +
+                    release_date + "\n"
+                    ;
+        }
 
         public boolean isAdult() {
             return adult;
@@ -150,4 +163,5 @@ public class Movie {
             this.vote_count = vote_count;
         }
     }
+
 }

@@ -4,7 +4,7 @@ import API.API;
 import API.APIInterface;
 import API.utils;
 import Search.SearchMovie;
-import Module.Movie;
+import Module.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -173,6 +173,7 @@ public class IHMMain extends JFrame {
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                listModel2.removeAllElements();
                 String str = textField1.getText();
                 Call<SearchMovie> searchMovieCall = apiInterface.get_movie(utils.API_KEY, str);
                 searchMovieCall.enqueue(new Callback<SearchMovie>() {
@@ -187,14 +188,14 @@ public class IHMMain extends JFrame {
                             JList<listfilms_search> list_search = new JList<>();
                             list_search.setModel(listModel2);
                             JScrollPane jScrollPaneSearch = new JScrollPane(list_search);
-                            JTextArea jTextAreaSearch = new JTextArea();
-                            jTextAreaSearch.setSize(400, 300);
+                            JTextPane jTextPaneSearch = new JTextPane();
+                            jTextPaneSearch.setSize(400, 300);
 
                             JPanel panelSearchWest = new JPanel();
                             JPanel panelSearchEast = new JPanel();
 
                             panelSearchWest.add(jScrollPaneSearch);
-                            panelSearchWest.add(jTextAreaSearch);
+                            panelSearchWest.add(jTextPaneSearch);
 
                             frame_search.add(panelSearchWest, BorderLayout.WEST);
 //                            frame_search.add(panelSearchEast, BorderLayout.WEST);
@@ -214,17 +215,20 @@ public class IHMMain extends JFrame {
                                     System.out.println(list_search.getSelectedIndex());
                                     search_result search_result = search_resultArrayList.get(list_search.getSelectedIndex());
                                     int search_result_id = search_result.iddefilm;
-                                    Call<Movie> movieCall = apiInterface.get_movie_by_id(search_result_id, utils.API_KEY);
 
-                                    movieCall.enqueue(new Callback<Movie>() {
+
+
+                                    Call<Movie.movie_detail> movie_detailCall = apiInterface.get_movie_by_id(search_result_id, utils.API_KEY);
+
+                                    movie_detailCall.enqueue(new Callback<Movie.movie_detail>() {
                                         @Override
-                                        public void onResponse(Call<Movie> call, Response<Movie> response) {
-                                            Movie movie = response.body();
-                                            System.out.println(movie);
+                                        public void onResponse(Call<Movie.movie_detail> call, Response<Movie.movie_detail> response) {
+                                            Movie.movie_detail movie_detail = response.body();
+                                            jTextPaneSearch.setText(movie_detail.toString());
                                         }
 
                                         @Override
-                                        public void onFailure(Call<Movie> call, Throwable throwable) {
+                                        public void onFailure(Call<Movie.movie_detail> call, Throwable throwable) {
 
                                         }
                                     });
@@ -233,6 +237,7 @@ public class IHMMain extends JFrame {
 
                         }
                     }
+
 
                     @Override
                     public void onFailure(Call<SearchMovie> call, Throwable throwable) {
