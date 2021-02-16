@@ -395,7 +395,6 @@ public class IHMMain extends JFrame {
                                                     buttonConfirmAddfilmToTextFrameSearch.addActionListener(new ActionListener() {
                                                         @Override
                                                         public void actionPerformed(ActionEvent e) {
-
                                                             for(int i = 0; i<lesfilms_inlist_list.size(); i++){
                                                                 if(lesfilms_inlist_list.get(i).getFilmID() == Integer.valueOf( textFieldFilmIdAddFilmToTxtFrameSearch.getText())){
                                                                     JOptionPane.showConfirmDialog(null, "This movie is already existe!", "Error", JOptionPane.PLAIN_MESSAGE);
@@ -406,6 +405,7 @@ public class IHMMain extends JFrame {
                                                             listModel.addElement(new lesfilms_inlist(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())));
                                                             lesfilms_inlist_list.add(new lesfilms_inlist(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())));
                                                             frameAddFilmFromSearch.setVisible(false);
+
 
 
                                                             try {
@@ -422,6 +422,7 @@ public class IHMMain extends JFrame {
                                                                 FileWriter fw = new FileWriter(absoultePath, true);
                                                                 fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText());
                                                                 fw.close();
+
 
 
 
