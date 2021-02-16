@@ -9,10 +9,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.awt.Color;
-
 import javax.imageio.ImageIO;
-import javax.naming.directory.SearchResult;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -23,9 +20,9 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 
 // Yilun JIANG API Key: 89e5521b3e8381cf6adc8f4c8432e07d
@@ -42,6 +39,9 @@ public class IHMMain extends JFrame {
     private JTextArea filmInfoTextArea;
     private JLabel nameOfFilmLabel;
     private JScrollPane listScrollPane;
+    private JTextPane textPaneMovieDetail;
+    private JScrollPane scrollPaneTextPane;
+    private JLabel labelFilmImage;
     private APIInterface apiInterface;
 
 
@@ -69,8 +69,10 @@ public class IHMMain extends JFrame {
         apiInterface = API.getAPI().create(APIInterface.class);
 
         listScrollPane.setViewportView(lesfilmsList);
+        scrollPaneTextPane.setViewportView(textPaneMovieDetail);
         lesfilmsList.setModel(listModel);
         lesfilmsList.setCellRenderer(new MyListUI());
+        StyledDocument styledDocumentTextPane = textPaneMovieDetail.getStyledDocument();
         File directory = new File("src/main/resources/film.csv");
         String absoultePath = directory.getAbsolutePath();
         List<String> list_film_in_txt = new ArrayList<String>();
@@ -96,19 +98,77 @@ public class IHMMain extends JFrame {
             e.printStackTrace();
         }
 
+        List<lesfilms_inlist> lesfilms_inlist_list = new ArrayList<>();
 
         for (int j = 0; j < list_film_in_txt.size(); j++) {
             listModel.addElement(new lesfilms_inlist(list_film_in_txt.get(j) + " ", list_mode_in_txt.get(j), list_filmid_in_txt.get(j)));
+            lesfilms_inlist_list.add(new lesfilms_inlist(list_film_in_txt.get(j), list_mode_in_txt.get(j), list_filmid_in_txt.get(j)));
         }
 
 
         lesfilmsList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
+                // TODO Frame
                 if (e.getValueIsAdjusting()) return;
-                lesfilms_inlist film = lesfilmsList.getSelectedValue();
-                filmInfoTextArea.setText("Name: " + film.getNomdefilm() + "\n" + "Type: " + film.getModel()+"\n" +film.getFilmID());
-                nameOfFilmLabel.setText(film.getNomdefilm());
+                labelFilmImage.setText(null);
+                labelFilmImage.setIcon(null);
+                textPaneMovieDetail.setText(null);
+                System.out.println(lesfilmsList.getSelectedIndex());
+                lesfilms_inlist lesfilms_inlist_selected = lesfilms_inlist_list.get(lesfilmsList.getSelectedIndex());
+                int film_id = lesfilms_inlist_selected.getFilmID();
+
+                Call<Movie.movie_detail> movie_detailCall = apiInterface.get_movie_by_id(film_id, utils.API_KEY);
+
+                movie_detailCall.enqueue(new Callback<Movie.movie_detail>() {
+                    @Override
+                    public void onResponse(Call<Movie.movie_detail> call, Response<Movie.movie_detail> response) {
+                        Movie.movie_detail movie_detail = response.body();
+                        SimpleAttributeSet attributeSetTitle = new SimpleAttributeSet();
+                        StyleConstants.setBold(attributeSetTitle, true);
+                        StyleConstants.setFontSize(attributeSetTitle, 30);
+
+                        BufferedImage bufferedImageIcon = null;
+
+                        try {
+                            bufferedImageIcon = ImageIO.read(new URL("https://image.tmdb.org/t/p/w500" + movie_detail.getPoster_path()));
+                            ImageIcon imageIcon = new ImageIcon(bufferedImageIcon);
+                            labelFilmImage.setIcon(imageIcon);
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        } catch (NullPointerException nullPointerException) {
+                            labelFilmImage.setText("This movie has no post image or you have set Film Id in ERROR");
+                        }
+
+                        //                    Edit Text Pane
+                        try {
+                            styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), movie_detail.getTitle(), attributeSetTitle);
+                            styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\nReleaased date: " + movie_detail.getRelease_date(), null);
+                            for (int k = 0; k < movie_detail.getGenres().size(); k++) {
+                                styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), movie_detail.getGenres().get(k).getName() + "  ", null);
+                            }
+                            styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\n\nAbstract:  " + movie_detail.getOverview(), null);
+                            styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\n\nRun time: " + movie_detail.getRuntime() + "min", null);
+                            styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\nMark: " + movie_detail.getVote_average() + "/10", null);
+                        } catch (BadLocationException badLocationException) {
+                            badLocationException.printStackTrace();
+                        } catch (NullPointerException nullPointerException) {
+                            try {
+                                styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "This movie has no detail or you have set Film ID in ERROR", null);
+                            } catch (BadLocationException badLocationException) {
+                                badLocationException.printStackTrace();
+                            }
+
+                        }
+                    }
+
+
+                    @Override
+                    public void onFailure(Call<Movie.movie_detail> call, Throwable throwable) {
+
+                    }
+                });
+
             }
         });
 
@@ -167,6 +227,7 @@ public class IHMMain extends JFrame {
                             fw.close();
 
                             listModel.addElement(new lesfilms_inlist(textFieldFilmNameAddFilmToTxt.getText(), comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString(), 0));
+                            lesfilms_inlist_list.add(new lesfilms_inlist(textFieldFilmNameAddFilmToTxt.getText(), comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString(), 0));
                             frameAddFilmToTxt.setVisible(false);
 
                         } catch (IOException ioException) {
@@ -184,6 +245,7 @@ public class IHMMain extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 listModel2.removeAllElements();
                 String str = textField1.getText();
+                List<search_result> search_resultArrayList = new ArrayList<>();
                 Call<SearchMovie> searchMovieCall = apiInterface.get_movie(utils.API_KEY, str);
                 searchMovieCall.enqueue(new Callback<SearchMovie>() {
                     @Override
@@ -224,16 +286,15 @@ public class IHMMain extends JFrame {
                             frame_search.add(jButtonAddToList, BorderLayout.SOUTH);
 //                            frame_search.add(panelSearchCenter, BorderLayout.CENTER);
 
-                            List<search_result> search_resultArrayList = new ArrayList<>();
-
-
                             for (int j = 0; j < searchMovie.getResults().size(); j++) {
                                 List<Movie.movie_detail> movie_detailList = searchMovie.getResults();
                                 listModel2.addElement(new listfilms_search(movie_detailList.get(j).getTitle()));
                                 search_resultArrayList.add(new search_result(movie_detailList.get(j).getTitle(), movie_detailList.get(j).getId()));
-
                             }
-                            list_search.addListSelectionListener(new ListSelectionListener() {
+
+
+
+                            list_search.addListSelectionListener(new ListSelectionListener() { // TODO Bug  1
                                 @Override
                                 public void valueChanged(ListSelectionEvent e) {
                                     if (e.getValueIsAdjusting()) return;
@@ -241,8 +302,8 @@ public class IHMMain extends JFrame {
                                     jLabelPostImage.setText(null);
                                     jLabelPostImage.setIcon(null);
                                     System.out.println(list_search.getSelectedIndex());
-                                    search_result search_result = search_resultArrayList.get(list_search.getSelectedIndex());
-                                    int search_result_id = search_result.iddefilm;
+                                    search_result search_result_index = search_resultArrayList.get(list_search.getSelectedIndex());
+                                    int search_result_id = search_result_index.iddefilm;
 
 
                                     Call<Movie.movie_detail> movie_detailCall = apiInterface.get_movie_by_id(search_result_id, utils.API_KEY);
@@ -263,8 +324,8 @@ public class IHMMain extends JFrame {
                                                 jLabelPostImage.setIcon(imageIcon);
 
                                             } catch (IOException ioException) {
-                                                ioException.printStackTrace();
-                                                jLabelPostImage.setText("This movie have no post image");
+//                                                ioException.printStackTrace();
+                                                jLabelPostImage.setText("This movie has no post image");
                                             }
 
 
@@ -335,6 +396,17 @@ public class IHMMain extends JFrame {
                                                         @Override
                                                         public void actionPerformed(ActionEvent e) {
 
+                                                            for(int i = 0; i<lesfilms_inlist_list.size(); i++){
+                                                                if(lesfilms_inlist_list.get(i).getFilmID() == Integer.valueOf( textFieldFilmIdAddFilmToTxtFrameSearch.getText())){
+                                                                    JOptionPane.showConfirmDialog(null, "This movie is already existe!", "Error", JOptionPane.PLAIN_MESSAGE);
+                                                                    frameAddFilmFromSearch.setVisible(false);
+                                                                    return;
+                                                                }
+                                                            }
+                                                            listModel.addElement(new lesfilms_inlist(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())));
+                                                            lesfilms_inlist_list.add(new lesfilms_inlist(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())));
+                                                            frameAddFilmFromSearch.setVisible(false);
+
 
                                                             try {
                                                                 if (textFieldFilmNameAddFilmToTxtFrameSearch.getText().contains("DVD")) {
@@ -351,8 +423,7 @@ public class IHMMain extends JFrame {
                                                                 fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText());
                                                                 fw.close();
 
-                                                                listModel.addElement(new lesfilms_inlist(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())));
-                                                                frameAddFilmFromSearch.setVisible(false);
+
 
                                                             } catch (IOException ioException) {
                                                                 ioException.printStackTrace();
