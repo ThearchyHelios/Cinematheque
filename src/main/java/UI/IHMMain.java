@@ -20,8 +20,9 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -32,20 +33,20 @@ public class IHMMain extends JFrame {
     private JPanel main_interface;
     private JButton searchButton;
     private JTextField textField1;
-    private JButton sortButton;
     private JButton addFilmButton;
     private JLabel lesFilmsLabel;
-    private JList<lesfilms_inlist> lesfilmsList;
+    private JList<listmodel_addelement> lesfilmsList;
     private JTextArea filmInfoTextArea;
     private JLabel nameOfFilmLabel;
     private JScrollPane listScrollPane;
     private JTextPane textPaneMovieDetail;
     private JScrollPane scrollPaneTextPane;
     private JLabel labelFilmImage;
+    private JComboBox comboBoxSort;
     private APIInterface apiInterface;
 
 
-    DefaultListModel<lesfilms_inlist> listModel = new DefaultListModel<>();
+    DefaultListModel<listmodel_addelement> listModel = new DefaultListModel<>();
     DefaultListModel<listfilms_search> listModel2 = new DefaultListModel<>();
 
 
@@ -66,7 +67,7 @@ public class IHMMain extends JFrame {
 
     public IHMMain() {
 //        Tmdb tmdb = new Tmdb("89e5521b3e8381cf6adc8f4c8432e07d"); /* This is TMDB API Key */
-        apiInterface = API.getAPI().create(APIInterface.class);
+        apiInterface = API.getAPI().create(APIInterface.class); // Create template of URL with API Key
 
         listScrollPane.setViewportView(lesfilmsList);
         scrollPaneTextPane.setViewportView(textPaneMovieDetail);
@@ -78,6 +79,8 @@ public class IHMMain extends JFrame {
         List<String> list_film_in_txt = new ArrayList<String>();
         List<String> list_mode_in_txt = new ArrayList<String>();
         List<Integer> list_filmid_in_txt = new ArrayList<Integer>();
+        List<String> list_year_in_txt = new ArrayList<String>();
+
         String line = "";
         try {
             FileInputStream fin = new FileInputStream(absoultePath);
@@ -90,6 +93,7 @@ public class IHMMain extends JFrame {
                 list_film_in_txt.add(film_string[0]);
                 list_mode_in_txt.add(film_string[1]);
                 list_filmid_in_txt.add(Integer.valueOf(film_string[2]));
+                list_year_in_txt.add(film_string[3]);
             }
             System.out.println(list_film_in_txt);
             System.out.println(list_mode_in_txt);
@@ -101,9 +105,37 @@ public class IHMMain extends JFrame {
         List<lesfilms_inlist> lesfilms_inlist_list = new ArrayList<>();
 
         for (int j = 0; j < list_film_in_txt.size(); j++) {
-            listModel.addElement(new lesfilms_inlist(list_film_in_txt.get(j) + " ", list_mode_in_txt.get(j), list_filmid_in_txt.get(j)));
-            lesfilms_inlist_list.add(new lesfilms_inlist(list_film_in_txt.get(j), list_mode_in_txt.get(j), list_filmid_in_txt.get(j)));
+            listModel.addElement(new listmodel_addelement (list_film_in_txt.get(j) + " ", list_mode_in_txt.get(j)));
+            lesfilms_inlist_list.add(new lesfilms_inlist(list_film_in_txt.get(j), list_mode_in_txt.get(j), list_filmid_in_txt.get(j), list_year_in_txt.get(j)));
         }
+
+
+        comboBoxSort.addItem("Sort");
+        comboBoxSort.addItem("Name");
+        comboBoxSort.addItem("Model");
+        comboBoxSort.addItem("Year");
+
+        comboBoxSort.addActionListener(new ActionListener() { //Add Sort Combo Box Action listener
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(comboBoxSort.getSelectedItem() == "Sort"){
+                    return;
+                } else if(comboBoxSort.getSelectedItem() == "Model"){
+                    DefaultListModel<listmodel_addelement> listModel1Model = new DefaultListModel<>();
+                    List<lesfilms_inlist> lesfilms_inlists_sortedmodel = new ArrayList<>();
+                    lesfilms_inlists_sortedmodel = lesfilms_inlist_list;
+                    for(int i=0; i<lesfilms_inlist_list.size()-1; i++){
+                        if(lesfilms_inlists_sortedmodel.get(i).getModel() == lesfilms_inlists_sortedmodel.get(i+1).getModel()){
+                            return;
+                        }
+                    }
+                }
+
+            }
+        });
+
+
+
 
 
         lesfilmsList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -114,6 +146,7 @@ public class IHMMain extends JFrame {
                 labelFilmImage.setText(null);
                 labelFilmImage.setIcon(null);
                 textPaneMovieDetail.setText(null);
+
                 System.out.println(lesfilmsList.getSelectedIndex());
                 lesfilms_inlist lesfilms_inlist_selected = lesfilms_inlist_list.get(lesfilmsList.getSelectedIndex());
                 int film_id = lesfilms_inlist_selected.getFilmID();
@@ -136,14 +169,17 @@ public class IHMMain extends JFrame {
                             labelFilmImage.setIcon(imageIcon);
                         } catch (IOException ioException) {
                             ioException.printStackTrace();
+                            labelFilmImage.setText("NO IMAGE ");
                         } catch (NullPointerException nullPointerException) {
-                            labelFilmImage.setText("This movie has no post image or you have set Film Id in ERROR");
+                            nullPointerException.printStackTrace();
+                            labelFilmImage.setText("This movie has been added by yourself");
                         }
+
 
                         //                    Edit Text Pane
                         try {
                             styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), movie_detail.getTitle(), attributeSetTitle);
-                            styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\nReleaased date: " + movie_detail.getRelease_date(), null);
+                            styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\nReleaased date: " + movie_detail.getRelease_date() + "\nGenre: ", null);
                             for (int k = 0; k < movie_detail.getGenres().size(); k++) {
                                 styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), movie_detail.getGenres().get(k).getName() + "  ", null);
                             }
@@ -223,11 +259,11 @@ public class IHMMain extends JFrame {
                                 return;
                             }
                             FileWriter fw = new FileWriter(absoultePath, true);
-                            fw.write("\n" + textFieldFilmNameAddFilmToTxt.getText() + "," + comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString() + "," + 0);
+                            fw.write("\n" + textFieldFilmNameAddFilmToTxt.getText() + "," + comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString() + "," + 0 + "," + 0);
                             fw.close();
 
-                            listModel.addElement(new lesfilms_inlist(textFieldFilmNameAddFilmToTxt.getText(), comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString(), 0));
-                            lesfilms_inlist_list.add(new lesfilms_inlist(textFieldFilmNameAddFilmToTxt.getText(), comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString(), 0));
+                            listModel.addElement(new listmodel_addelement(textFieldFilmNameAddFilmToTxt.getText(), comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString()));
+                            lesfilms_inlist_list.add(new lesfilms_inlist(textFieldFilmNameAddFilmToTxt.getText(), comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString(), 0, "0"));
                             frameAddFilmToTxt.setVisible(false);
 
                         } catch (IOException ioException) {
@@ -254,10 +290,11 @@ public class IHMMain extends JFrame {
                         if (response.body().getTotal_results() != 0) {
                             JFrame frame_search = new JFrame("Searching");
                             frame_search.setVisible(true);
-                            frame_search.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                            frame_search.setDefaultCloseOperation(HIDE_ON_CLOSE);
                             frame_search.setSize(700, 500);
                             JList<listfilms_search> list_search = new JList<>();
                             list_search.setModel(listModel2);
+
 
                             JScrollPane jScrollPaneSearch = new JScrollPane(list_search);
                             jScrollPaneSearch.setSize(600, 600);
@@ -302,7 +339,14 @@ public class IHMMain extends JFrame {
                                     jLabelPostImage.setText(null);
                                     jLabelPostImage.setIcon(null);
                                     System.out.println(list_search.getSelectedIndex());
-                                    search_result search_result_index = search_resultArrayList.get(list_search.getSelectedIndex());
+//                                    search_result search_result_index = search_resultArrayList.get(list_search.getSelectedIndex());
+                                    search_result search_result_index = search_resultArrayList.get(0);
+                                    try {
+                                        search_result_index = search_resultArrayList.get(list_search.getSelectedIndex());
+                                    }catch (Exception exception){
+                                        exception.printStackTrace();
+                                    }
+
                                     int search_result_id = search_result_index.iddefilm;
 
 
@@ -359,7 +403,7 @@ public class IHMMain extends JFrame {
                                                     JPanel jPanel2 = new JPanel();
 
 
-                                                    frameAddFilmFromSearch.setSize(300, 200);
+                                                    frameAddFilmFromSearch.setSize(500, 200);
 
                                                     JLabel label1AddFilmToTxtFrameSearch = new JLabel("Name: ");
                                                     JTextField textFieldFilmNameAddFilmToTxtFrameSearch = new JTextField(10);
@@ -367,6 +411,8 @@ public class IHMMain extends JFrame {
                                                     JLabel label2AddFilmToTxtFrameSearch = new JLabel("ID:   ");
                                                     JTextField textFieldFilmIdAddFilmToTxtFrameSearch = new JTextField(10);
                                                     textFieldFilmIdAddFilmToTxtFrameSearch.setText(String.valueOf(movie_detail.getId()));
+                                                    textFieldFilmNameAddFilmToTxtFrameSearch.setSize(300, -1);
+
 
                                                     jPanel1.add(label1AddFilmToTxtFrameSearch);
                                                     jPanel1.add(textFieldFilmNameAddFilmToTxtFrameSearch);
@@ -402,8 +448,8 @@ public class IHMMain extends JFrame {
                                                                     return;
                                                                 }
                                                             }
-                                                            listModel.addElement(new lesfilms_inlist(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())));
-                                                            lesfilms_inlist_list.add(new lesfilms_inlist(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())));
+                                                            listModel.addElement(new listmodel_addelement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
+                                                            lesfilms_inlist_list.add(new lesfilms_inlist(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), movie_detail.getRelease_date()));
                                                             frameAddFilmFromSearch.setVisible(false);
 
 
@@ -420,7 +466,7 @@ public class IHMMain extends JFrame {
                                                                     return;
                                                                 }
                                                                 FileWriter fw = new FileWriter(absoultePath, true);
-                                                                fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText());
+                                                                fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," + movie_detail.getRelease_date());
                                                                 fw.close();
 
 
@@ -462,20 +508,23 @@ public class IHMMain extends JFrame {
                 // TODO search之后，将左侧list改变为search结果，其实就是改变listModel的值
             }
         });
+
     }
 
 
     public class lesfilms_inlist {
         String nomdefilm;
         String model;
-        int filmID; //This model here is to define if the movir is stocked in DVD or B-ray
+        int filmID;
+        String year;
 
 
         // TODO: Change model after when other disagree......
-        public lesfilms_inlist(String nomdefilm, String model, int filmID) {
+        public lesfilms_inlist(String nomdefilm, String model, int filmID, String year) {
             this.nomdefilm = nomdefilm;
             this.model = model;
             this.filmID = filmID;
+            this.year = year;
         }
 
 
@@ -503,13 +552,46 @@ public class IHMMain extends JFrame {
             this.filmID = filmID;
         }
 
-        @Override
-        public String toString() {
-            return nomdefilm + "\n" + model;
+        public String getYear() {
+            return year;
+        }
+
+        public void setYear(String year) {
+            this.year = year;
         }
 
     }
 
+    public class listmodel_addelement{
+        String nom;
+        String model;
+
+        public listmodel_addelement(String nom, String model) {
+            this.nom = nom;
+            this.model = model;
+        }
+
+        public String getNom() {
+            return nom;
+        }
+
+        public void setNom(String nom) {
+            this.nom = nom;
+        }
+
+        public String getModel() {
+            return model;
+        }
+
+        public void setModel(String model) {
+            this.model = model;
+        }
+
+        @Override
+        public String toString() {
+            return nom + '\n' + model;
+        }
+    }
 
     public class listfilms_search {
         String nomdefilm;

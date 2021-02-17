@@ -37,14 +37,6 @@
           <text value="Les Films"/>
         </properties>
       </component>
-      <component id="bb3d2" class="javax.swing.JButton" binding="sortButton" default-binding="true">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Sort"/>
-        </properties>
-      </component>
       <component id="d9160" class="javax.swing.JButton" binding="addFilmButton" default-binding="true">
         <constraints>
           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -55,7 +47,11 @@
       </component>
       <scrollpane id="8c6cd" binding="listScrollPane">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="1" use-parent-layout="false">
+            <minimum-size width="250" height="-1"/>
+            <preferred-size width="250" height="-1"/>
+            <maximum-size width="250" height="-1"/>
+          </grid>
         </constraints>
         <properties/>
         <border type="none"/>
@@ -99,6 +95,12 @@
         <properties>
           <text value=""/>
         </properties>
+      </component>
+      <component id="93bc4" class="javax.swing.JComboBox" binding="comboBoxSort">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
       </component>
     </children>
   </grid>
