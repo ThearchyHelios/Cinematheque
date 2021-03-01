@@ -21,8 +21,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -31,14 +29,14 @@ import java.util.List;
 
 public class IHMMain extends JFrame {
     private JPanel main_interface;
-    private JButton searchButton;
+    private JButton buttonSearch;
     private JTextField textField1;
-    private JButton addFilmButton;
-    private JLabel lesFilmsLabel;
+    private JButton buttonAddFilm;
+    private JLabel labelLesFilms;
     private JList<listmodel_addelement> lesfilmsList;
-    private JTextArea filmInfoTextArea;
-    private JLabel nameOfFilmLabel;
-    private JScrollPane listScrollPane;
+    private JTextArea textAreafilmInfo;
+    private JLabel labelNomDeFilm;
+    private JScrollPane scrollPaneListDeFilm;
     private JTextPane textPaneMovieDetail;
     private JScrollPane scrollPaneTextPane;
     private JLabel labelFilmImage;
@@ -69,7 +67,7 @@ public class IHMMain extends JFrame {
 //        Tmdb tmdb = new Tmdb("89e5521b3e8381cf6adc8f4c8432e07d"); /* This is TMDB API Key */
         apiInterface = API.getAPI().create(APIInterface.class); // Create template of URL with API Key
 
-        listScrollPane.setViewportView(lesfilmsList);
+        scrollPaneListDeFilm.setViewportView(lesfilmsList);
         scrollPaneTextPane.setViewportView(textPaneMovieDetail);
         lesfilmsList.setModel(listModel);
         lesfilmsList.setCellRenderer(new MyListUI());
@@ -209,7 +207,7 @@ public class IHMMain extends JFrame {
         });
 
 
-        addFilmButton.addActionListener(new ActionListener() {
+        buttonAddFilm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -276,7 +274,7 @@ public class IHMMain extends JFrame {
         });
 
 
-        searchButton.addActionListener(new ActionListener() {
+        buttonSearch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 listModel2.removeAllElements();
@@ -483,6 +481,7 @@ public class IHMMain extends JFrame {
                                             });
 
 
+
                                         }
 
 
@@ -526,6 +525,17 @@ public class IHMMain extends JFrame {
             this.filmID = filmID;
             this.year = year;
         }
+
+
+
+
+
+
+
+
+
+
+
 
 
         public String getNomdefilm() {

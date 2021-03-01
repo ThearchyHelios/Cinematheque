@@ -11,7 +11,7 @@
     </properties>
     <border type="none"/>
     <children>
-      <component id="dfff4" class="javax.swing.JButton" binding="searchButton" default-binding="true">
+      <component id="dfff4" class="javax.swing.JButton" binding="buttonSearch" default-binding="true">
         <constraints>
           <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -27,7 +27,7 @@
         </constraints>
         <properties/>
       </component>
-      <component id="4c9d1" class="javax.swing.JLabel" binding="lesFilmsLabel">
+      <component id="4c9d1" class="javax.swing.JLabel" binding="labelLesFilms">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -37,7 +37,7 @@
           <text value="Les Films"/>
         </properties>
       </component>
-      <component id="d9160" class="javax.swing.JButton" binding="addFilmButton" default-binding="true">
+      <component id="d9160" class="javax.swing.JButton" binding="buttonAddFilm" default-binding="true">
         <constraints>
           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -45,7 +45,7 @@
           <text value="Add Film"/>
         </properties>
       </component>
-      <scrollpane id="8c6cd" binding="listScrollPane">
+      <scrollpane id="8c6cd" binding="scrollPaneListDeFilm">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="1" use-parent-layout="false">
             <minimum-size width="250" height="-1"/>
