@@ -20,7 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 
@@ -72,6 +72,7 @@ public class IHMMain extends JFrame {
         lesfilmsList.setModel(listModel);
         lesfilmsList.setCellRenderer(new MyListUI());
         StyledDocument styledDocumentTextPane = textPaneMovieDetail.getStyledDocument();
+
         File directory = new File("src/main/resources/film.csv");
         String absoultePath = directory.getAbsolutePath();
         List<String> list_film_in_txt = new ArrayList<String>();
@@ -103,7 +104,7 @@ public class IHMMain extends JFrame {
         List<lesfilms_inlist> lesfilms_inlist_list = new ArrayList<>();
 
         for (int j = 0; j < list_film_in_txt.size(); j++) {
-            listModel.addElement(new listmodel_addelement (list_film_in_txt.get(j) + " ", list_mode_in_txt.get(j)));
+            listModel.addElement(new listmodel_addelement(list_film_in_txt.get(j) + " ", list_mode_in_txt.get(j)));
             lesfilms_inlist_list.add(new lesfilms_inlist(list_film_in_txt.get(j), list_mode_in_txt.get(j), list_filmid_in_txt.get(j), list_year_in_txt.get(j)));
         }
 
@@ -116,24 +117,70 @@ public class IHMMain extends JFrame {
         comboBoxSort.addActionListener(new ActionListener() { //Add Sort Combo Box Action listener
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(comboBoxSort.getSelectedItem() == "Sort"){
-                    return;
-                } else if(comboBoxSort.getSelectedItem() == "Model"){
-                    DefaultListModel<listmodel_addelement> listModel1Model = new DefaultListModel<>();
-                    List<lesfilms_inlist> lesfilms_inlists_sortedmodel = new ArrayList<>();
-                    lesfilms_inlists_sortedmodel = lesfilms_inlist_list;
-                    for(int i=0; i<lesfilms_inlist_list.size()-1; i++){
-                        if(lesfilms_inlists_sortedmodel.get(i).getModel() == lesfilms_inlists_sortedmodel.get(i+1).getModel()){
-                            return;
+                if (comboBoxSort.getSelectedItem() == "Sort") {
+                    File directory = new File("src/main/resources/film.csv");
+                    String absoultePath = directory.getAbsolutePath();
+                    List<String> list_film_in_txt = new ArrayList<String>();
+                    List<String> list_mode_in_txt = new ArrayList<String>();
+                    List<Integer> list_filmid_in_txt = new ArrayList<Integer>();
+                    List<String> list_year_in_txt = new ArrayList<String>();
+
+                    String line = "";
+                    try {
+                        FileInputStream fin = new FileInputStream(absoultePath);
+                        InputStreamReader reader = new InputStreamReader(fin);
+                        BufferedReader buffReader = new BufferedReader(reader);
+                        StringBuffer stringBuffer = new StringBuffer();
+                        while ((line = buffReader.readLine()) != null) {
+                            System.out.println(line);
+                            String[] film_string = line.split(",");
+                            list_film_in_txt.add(film_string[0]);
+                            list_mode_in_txt.add(film_string[1]);
+                            list_filmid_in_txt.add(Integer.valueOf(film_string[2]));
+                            list_year_in_txt.add(film_string[3]);
                         }
+                        System.out.println(list_film_in_txt);
+                        System.out.println(list_mode_in_txt);
+                        buffReader.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
+                    for (int j = 0; j < list_film_in_txt.size(); j++) {
+                        listModel.set(j, new listmodel_addelement(list_film_in_txt.get(j) + " ", list_mode_in_txt.get(j)));
+                        lesfilms_inlist_list.set(j, new lesfilms_inlist(list_film_in_txt.get(j), list_mode_in_txt.get(j), list_filmid_in_txt.get(j), list_year_in_txt.get(j)));
+                    }
+                } else if (comboBoxSort.getSelectedItem() == "Model") {
+                    Collections.sort(lesfilms_inlist_list, FilmModelComparator);
+                    for (int i=0; i<lesfilms_inlist_list.size(); i++){
+                        listModel.set(i, new listmodel_addelement(lesfilms_inlist_list.get(i).getNomdefilm(), lesfilms_inlist_list.get(i).getModel()));
+                    }
+                    lesfilmsList.setModel(listModel);
+                } else if(comboBoxSort.getSelectedItem() == "Name"){
+//                    List<lesfilms_inlist> lesfilms_inlists_sortedname = new ArrayList<>(lesfilms_inlist_list);
+//                    DefaultListModel<listmodel_addelement> listModelSortName = new DefaultListModel<>();
+//                    Collections.sort(lesfilms_inlists_sortedname, FilmNameComparator);
+//                    for (int i=0;i<lesfilms_inlists_sortedname.size();i++){
+//                        listModelSortName.addElement(new listmodel_addelement(lesfilms_inlists_sortedname.get(i).getNomdefilm(), lesfilms_inlists_sortedname.get(i).getModel()));
+//                    }
+//                    lesfilmsList.setModel(listModelSortName);
+
+                    Collections.sort(lesfilms_inlist_list, FilmNameComparator);
+                    for (int i=0;i<lesfilms_inlist_list.size();i++){
+                        listModel.set(i, new listmodel_addelement(lesfilms_inlist_list.get(i).getNomdefilm(), lesfilms_inlist_list.get(i).getModel()));
+                    }
+                    lesfilmsList.setModel(listModel);
+
+                    return;
+                } else if (comboBoxSort.getSelectedItem() == "Year"){
+                    Collections.sort(lesfilms_inlist_list, FilmYearComparator);
+                    for (int i=0; i<lesfilms_inlist_list.size(); i++){
+                        listModel.set(i, new listmodel_addelement(lesfilms_inlist_list.get(i).getNomdefilm(), lesfilms_inlist_list.get(i).getModel()));
+                    }
+                    lesfilmsList.setModel(listModel);
                 }
 
             }
         });
-
-
-
 
 
         lesfilmsList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -286,7 +333,7 @@ public class IHMMain extends JFrame {
                     public void onResponse(Call<SearchMovie> call, Response<SearchMovie> response) {
                         SearchMovie searchMovie = response.body();
                         if (response.body().getTotal_results() != 0) {
-                            JFrame frame_search = new JFrame("Searching");
+                            JFrame frame_search = new JFrame("Search Results");
                             frame_search.setVisible(true);
                             frame_search.setDefaultCloseOperation(HIDE_ON_CLOSE);
                             frame_search.setSize(700, 500);
@@ -328,7 +375,6 @@ public class IHMMain extends JFrame {
                             }
 
 
-
                             list_search.addListSelectionListener(new ListSelectionListener() { // TODO Bug  1
                                 @Override
                                 public void valueChanged(ListSelectionEvent e) {
@@ -341,7 +387,7 @@ public class IHMMain extends JFrame {
                                     search_result search_result_index = search_resultArrayList.get(0);
                                     try {
                                         search_result_index = search_resultArrayList.get(list_search.getSelectedIndex());
-                                    }catch (Exception exception){
+                                    } catch (Exception exception) {
                                         exception.printStackTrace();
                                     }
 
@@ -439,8 +485,8 @@ public class IHMMain extends JFrame {
                                                     buttonConfirmAddfilmToTextFrameSearch.addActionListener(new ActionListener() {
                                                         @Override
                                                         public void actionPerformed(ActionEvent e) {
-                                                            for(int i = 0; i<lesfilms_inlist_list.size(); i++){
-                                                                if(lesfilms_inlist_list.get(i).getFilmID() == Integer.valueOf( textFieldFilmIdAddFilmToTxtFrameSearch.getText())){
+                                                            for (int i = 0; i < lesfilms_inlist_list.size(); i++) {
+                                                                if (lesfilms_inlist_list.get(i).getFilmID() == Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())) {
                                                                     JOptionPane.showConfirmDialog(null, "This movie is already existe!", "Error", JOptionPane.PLAIN_MESSAGE);
                                                                     frameAddFilmFromSearch.setVisible(false);
                                                                     return;
@@ -449,7 +495,6 @@ public class IHMMain extends JFrame {
                                                             listModel.addElement(new listmodel_addelement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
                                                             lesfilms_inlist_list.add(new lesfilms_inlist(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), movie_detail.getRelease_date()));
                                                             frameAddFilmFromSearch.setVisible(false);
-
 
 
                                                             try {
@@ -468,8 +513,6 @@ public class IHMMain extends JFrame {
                                                                 fw.close();
 
 
-
-
                                                             } catch (IOException ioException) {
                                                                 ioException.printStackTrace();
                                                             }
@@ -479,7 +522,6 @@ public class IHMMain extends JFrame {
 
                                                 }
                                             });
-
 
 
                                         }
@@ -492,7 +534,10 @@ public class IHMMain extends JFrame {
                                     });
                                 }
                             });
+                        } else if (response.body().getTotal_results() == 0) {
+                            JOptionPane.showMessageDialog(null, "No result!");
                         }
+
                     }
 
 
@@ -525,17 +570,6 @@ public class IHMMain extends JFrame {
             this.filmID = filmID;
             this.year = year;
         }
-
-
-
-
-
-
-
-
-
-
-
 
 
         public String getNomdefilm() {
@@ -572,7 +606,7 @@ public class IHMMain extends JFrame {
 
     }
 
-    public class listmodel_addelement{
+    public class listmodel_addelement {
         String nom;
         String model;
 
@@ -663,4 +697,28 @@ public class IHMMain extends JFrame {
         // TODO: place custom component creation code here
 
     }
+    public static Comparator<lesfilms_inlist> FilmNameComparator = new Comparator<lesfilms_inlist>() {
+        @Override
+        public int compare(lesfilms_inlist o1, lesfilms_inlist o2) {
+            String FilmName1 = o1.getNomdefilm().toUpperCase();
+            String FilmName2 = o2.getNomdefilm().toUpperCase();
+            return FilmName1.compareTo(FilmName2);
+        }
+    };
+    public static Comparator<lesfilms_inlist> FilmModelComparator = new Comparator<lesfilms_inlist>() {
+        @Override
+        public int compare(lesfilms_inlist o1, lesfilms_inlist o2) {
+            String FilmModel1 = o1.getModel().toUpperCase();
+            String FilmModel2 = o2.getModel().toUpperCase();
+            return FilmModel1.compareTo(FilmModel2);
+        }
+    };
+    public static Comparator<lesfilms_inlist> FilmYearComparator = new Comparator<lesfilms_inlist>() {
+        @Override
+        public int compare(lesfilms_inlist o1, lesfilms_inlist o2) {
+            String FilmYear1 = o1.getYear().toUpperCase();
+            String FilmYear2 = o2.getYear().toUpperCase();
+            return FilmYear1.compareTo(FilmYear2);
+        }
+    };
 }
