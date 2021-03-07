@@ -156,13 +156,6 @@ public class IHMMain extends JFrame {
                     }
                     lesfilmsList.setModel(listModel);
                 } else if(comboBoxSort.getSelectedItem() == "Name"){
-//                    List<lesfilms_inlist> lesfilms_inlists_sortedname = new ArrayList<>(lesfilms_inlist_list);
-//                    DefaultListModel<listmodel_addelement> listModelSortName = new DefaultListModel<>();
-//                    Collections.sort(lesfilms_inlists_sortedname, FilmNameComparator);
-//                    for (int i=0;i<lesfilms_inlists_sortedname.size();i++){
-//                        listModelSortName.addElement(new listmodel_addelement(lesfilms_inlists_sortedname.get(i).getNomdefilm(), lesfilms_inlists_sortedname.get(i).getModel()));
-//                    }
-//                    lesfilmsList.setModel(listModelSortName);
 
                     Collections.sort(lesfilms_inlist_list, FilmNameComparator);
                     for (int i=0;i<lesfilms_inlist_list.size();i++){
@@ -235,7 +228,7 @@ public class IHMMain extends JFrame {
                             badLocationException.printStackTrace();
                         } catch (NullPointerException nullPointerException) {
                             try {
-                                styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "This movie has no detail or you have set Film ID in ERROR", null);
+                                styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "This movie has no detail", null);
                             } catch (BadLocationException badLocationException) {
                                 badLocationException.printStackTrace();
                             }
@@ -552,7 +545,13 @@ public class IHMMain extends JFrame {
                 // TODO search之后，将左侧list改变为search结果，其实就是改变listModel的值
             }
         });
-
+//
+//        textField1.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//
+//            }
+//        });
     }
 
 
