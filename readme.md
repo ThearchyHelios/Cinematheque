@@ -1,9 +1,7 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+[![Generic badge](https://img.shields.io/badge/Cinematheque-V4.1-red.svg)](https://github.com/Marshellson/Cinematheque)
+[![Maintaner](https://img.shields.io/badge/Maintainer-JIANGYilun_WANGHaoyu_KANGZhuodong-blue)](https://github.com/Marshellson/Cinematheque/graphs/contributors)
+[![GitHub license](https://img.shields.io/github/license/Marshellson/Cinematheque.svg)](https://github.com/Marshellson/Cinematheque/blob/main/LICENSE)
+[![made-for-IDEA](https://img.shields.io/badge/Made_for_IDEA-1f425f.svg)](https://www.jetbrains.com/idea/)
 
 
 # Project Cinémathèque
