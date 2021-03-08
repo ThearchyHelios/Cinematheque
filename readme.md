@@ -1,8 +1,9 @@
-[![Contributors][contributors-shield]][https://github.com/Marshellson/Cinematheque/graphs/contributors]
-[![Forks][forks-shield]][https://github.com/Marshellson/Cinematheque/network/members]
-[![Stargazers][stars-shield]][https://github.com/Marshellson/Cinematheque/stargazers]
-[![Issues][issues-shield]][https://github.com/Marshellson/Cinematheque/issues]
-[![MIT License][license-shield]][https://github.com/Marshellson/Cinematheque/blob/main/LICENSE]
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 # Project Cinémathèque
