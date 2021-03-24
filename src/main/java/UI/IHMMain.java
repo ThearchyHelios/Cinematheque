@@ -151,22 +151,22 @@ public class IHMMain extends JFrame {
                     }
                 } else if (comboBoxSort.getSelectedItem() == "Model") {
                     Collections.sort(lesfilms_inlist_list, FilmModelComparator);
-                    for (int i=0; i<lesfilms_inlist_list.size(); i++){
+                    for (int i = 0; i < lesfilms_inlist_list.size(); i++) {
                         listModel.set(i, new listmodel_addelement(lesfilms_inlist_list.get(i).getNomdefilm(), lesfilms_inlist_list.get(i).getModel()));
                     }
                     lesfilmsList.setModel(listModel);
-                } else if(comboBoxSort.getSelectedItem() == "Name"){
+                } else if (comboBoxSort.getSelectedItem() == "Name") {
 
                     Collections.sort(lesfilms_inlist_list, FilmNameComparator);
-                    for (int i=0;i<lesfilms_inlist_list.size();i++){
+                    for (int i = 0; i < lesfilms_inlist_list.size(); i++) {
                         listModel.set(i, new listmodel_addelement(lesfilms_inlist_list.get(i).getNomdefilm(), lesfilms_inlist_list.get(i).getModel()));
                     }
                     lesfilmsList.setModel(listModel);
 
                     return;
-                } else if (comboBoxSort.getSelectedItem() == "Year"){
+                } else if (comboBoxSort.getSelectedItem() == "Year") {
                     Collections.sort(lesfilms_inlist_list, FilmYearComparator);
-                    for (int i=0; i<lesfilms_inlist_list.size(); i++){
+                    for (int i = 0; i < lesfilms_inlist_list.size(); i++) {
                         listModel.set(i, new listmodel_addelement(lesfilms_inlist_list.get(i).getNomdefilm(), lesfilms_inlist_list.get(i).getModel()));
                     }
                     lesfilmsList.setModel(listModel);
@@ -180,7 +180,9 @@ public class IHMMain extends JFrame {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 // TODO Frame
-                if (e.getValueIsAdjusting()) return;
+                if (e.getValueIsAdjusting()) {
+                    return;
+                }
                 labelFilmImage.setText(null);
                 labelFilmImage.setIcon(null);
                 textPaneMovieDetail.setText(null);
@@ -371,7 +373,9 @@ public class IHMMain extends JFrame {
                             list_search.addListSelectionListener(new ListSelectionListener() { // TODO Bug  1
                                 @Override
                                 public void valueChanged(ListSelectionEvent e) {
-                                    if (e.getValueIsAdjusting()) return;
+                                    if (e.getValueIsAdjusting()) {
+                                        return;
+                                    }
                                     jTextPaneSearch.setText(null);
                                     jLabelPostImage.setText(null);
                                     jLabelPostImage.setIcon(null);
@@ -696,6 +700,7 @@ public class IHMMain extends JFrame {
         // TODO: place custom component creation code here
 
     }
+
     public static Comparator<lesfilms_inlist> FilmNameComparator = new Comparator<lesfilms_inlist>() {
         @Override
         public int compare(lesfilms_inlist o1, lesfilms_inlist o2) {
