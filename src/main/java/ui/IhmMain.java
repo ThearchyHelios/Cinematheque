@@ -41,6 +41,7 @@ public class IhmMain extends JFrame {
     private JScrollPane scrollPaneTextPane;
     private JLabel labelFilmImage;
     private JComboBox comboBoxSort;
+    private JButton buttonDelFilm;
     private APIInterface apiInterface;
 
 
@@ -49,13 +50,11 @@ public class IhmMain extends JFrame {
 
 
     public static void mainFrame() {
-        JFrame frame = new JFrame("IHMMain");
+        JFrame frame = new JFrame("IhmMain");
         frame.setContentPane(new IhmMain().mainInterface);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-
-
     }
 
     public static void main(String[] args) {
@@ -557,6 +556,73 @@ public class IhmMain extends JFrame {
 //
 //            }
 //        });
+
+        // Delete Button
+        buttonDelFilm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int indexDelFilm = listLesFilm.getSelectedIndex();
+                System.out.println(indexDelFilm);
+                //Trim() to delete the Space in the back of Name
+                String stringDelFilmNom = new String(listModel.get(indexDelFilm).getNom());
+                stringDelFilmNom = stringDelFilmNom.substring(0, stringDelFilmNom.length() - 1);
+                // Delete Last Space in String
+                System.out.println(stringDelFilmNom);
+
+                // Get Film names from TXT file, search the movie which we want to delete and then delete it
+                //TXT to ArrayList
+                File directory = new File("src/main/resources/film.csv");
+                String absoultePath = directory.getAbsolutePath();
+                List<String> listFilmInTxt = new ArrayList<String>();
+                List<String> listModeInTxt = new ArrayList<String>();
+                List<Integer> listFilmIdInTxt = new ArrayList<Integer>();
+                List<String> listYearInTxt = new ArrayList<String>();
+
+                String line = "";
+                try {
+                    FileInputStream fin = new FileInputStream(absoultePath);
+                    InputStreamReader reader = new InputStreamReader(fin);
+                    BufferedReader buffReader = new BufferedReader(reader);
+                    StringBuffer stringBuffer = new StringBuffer();
+                    while ((line = buffReader.readLine()) != null) {
+                        String[] stringFilm = line.split(",");
+                        listFilmInTxt.add(stringFilm[0]);
+                        listModeInTxt.add(stringFilm[1]);
+                        listFilmIdInTxt.add(Integer.valueOf(stringFilm[2]));
+                        listYearInTxt.add(stringFilm[3]);
+                    }
+                    System.out.println(listFilmInTxt);
+                    buffReader.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                for (int i = 0; i < listFilmInTxt.size(); i++) {
+//                    System.out.println(listFilmInTxt.get(i));
+                    if(listFilmInTxt.get(i) == stringDelFilmNom) {
+                        System.out.println(i);
+                        System.out.println(listFilmInTxt.get(i));
+                        System.out.println("YES");
+                        listModel.remove(indexDelFilm);
+                        listFilmInTxt.remove(i);
+                        listModeInTxt.remove(i);
+                        listFilmIdInTxt.remove(i);
+                        listYearInTxt.remove(i);
+                        for(int j = 0; j < listFilmInTxt.size(); j++){
+                            try{
+                                FileWriter fw = new FileWriter(absoultePath, true);
+                                fw.write("\n" + listFilmInTxt.get(j) + "," + listModeInTxt.get(j) + "," + listFilmIdInTxt.get(j) + "," + listYearInTxt.get(j));
+                                fw.close();
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                        }
+
+                    }
+                }
+
+
+            }
+        });
     }
 
 
