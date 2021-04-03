@@ -183,6 +183,9 @@ public class IhmMain extends JFrame {
                 if (e.getValueIsAdjusting()) {
                     return;
                 }
+                if (listLesFilm.getSelectedIndex() == -1){
+                    return;
+                }
                 labelFilmImage.setText(null);
                 labelFilmImage.setIcon(null);
                 textPaneMovieDetail.setText(null);
@@ -598,22 +601,45 @@ public class IhmMain extends JFrame {
                 }
                 for (int i = 0; i < listFilmInTxt.size(); i++) {
 //                    System.out.println(listFilmInTxt.get(i));
-                    if(listFilmInTxt.get(i) == stringDelFilmNom) {
+                    if (listFilmInTxt.get(i).equals(stringDelFilmNom)) {
                         System.out.println(i);
                         System.out.println(listFilmInTxt.get(i));
-                        System.out.println("YES");
-                        listModel.remove(indexDelFilm);
-                        listFilmInTxt.remove(i);
-                        listModeInTxt.remove(i);
-                        listFilmIdInTxt.remove(i);
-                        listYearInTxt.remove(i);
-                        for(int j = 0; j < listFilmInTxt.size(); j++){
-                            try{
-                                FileWriter fw = new FileWriter(absoultePath, true);
-                                fw.write("\n" + listFilmInTxt.get(j) + "," + listModeInTxt.get(j) + "," + listFilmIdInTxt.get(j) + "," + listYearInTxt.get(j));
+                        if (indexDelFilm != -1) {
+                            listModel.remove(indexDelFilm);
+                            System.out.println("yes");
+                            try {
+                                FileWriter fw = new FileWriter(absoultePath);
+                                fw.write("");
+                                fw.flush();
                                 fw.close();
                             } catch (IOException ioException) {
                                 ioException.printStackTrace();
+                            }
+                            listFilmInTxt.remove(i);
+                            listModeInTxt.remove(i);
+                            listFilmIdInTxt.remove(i);
+                            listYearInTxt.remove(i);
+
+
+                            for (int j = 0; j < listFilmInTxt.size(); j++) {
+                                if(j < listFilmInTxt.size() -1){
+                                    try {
+                                        FileWriter fw = new FileWriter(absoultePath, true);
+                                        fw.write(listFilmInTxt.get(j) + "," + listModeInTxt.get(j) + "," + listFilmIdInTxt.get(j) + "," + listYearInTxt.get(j) + "\n");
+                                        fw.close();
+                                    } catch (IOException ioException) {
+                                        ioException.printStackTrace();
+                                    }
+                                } else {
+                                    try {
+                                        FileWriter fw = new FileWriter(absoultePath, true);
+                                        fw.write(listFilmInTxt.get(j) + "," + listModeInTxt.get(j) + "," + listFilmIdInTxt.get(j) + "," + listYearInTxt.get(j));
+                                        fw.close();
+                                    } catch (IOException ioException) {
+                                        ioException.printStackTrace();
+                                    }
+                                }
+
                             }
                         }
 
