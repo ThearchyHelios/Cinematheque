@@ -1,6 +1,5 @@
 [![Cinematheque](https://img.shields.io/badge/Cinematheque-V4.1-red.svg)](https://github.com/Marshellson/Cinematheque)
 [![Maintaner](https://img.shields.io/badge/Maintainer-JIANGYilun_WANGHaoyu_KANGZhuodong-blue)](https://github.com/Marshellson/Cinematheque/graphs/contributors)
-[![GitHub license](https://img.shields.io/badge/Licence-Mozilla_Public_License_2.0-green.svg)](https://github.com/Marshellson/Cinematheque/blob/main/LICENSE)
 [![made-for-IDEA](https://img.shields.io/badge/Made_for_IDEA-1f425f.svg)](https://www.jetbrains.com/idea/)
 
 
