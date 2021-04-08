@@ -72,6 +72,7 @@ public class IhmMain extends JFrame {
     public IhmMain() {
 
         // Tmdb tmdb = new Tmdb("89e5521b3e8381cf6adc8f4c8432e07d");
+
         // Create template of URL with API Key
         apiInterface = API.getAPI().create(APIInterface.class);
 
