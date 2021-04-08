@@ -8,9 +8,6 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 
-
-
-
 public interface APIInterface {
     @GET("3/search/movie")
     Call<SearchMovie> get_movie(

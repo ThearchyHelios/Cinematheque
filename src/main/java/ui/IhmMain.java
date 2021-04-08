@@ -3,8 +3,8 @@ package ui;
 import API.API;
 import API.APIInterface;
 import API.utils;
+import Module.Movie;
 import Search.SearchMovie;
-import Module.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -13,14 +13,19 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -44,11 +49,13 @@ public class IhmMain extends JFrame {
     private JButton buttonDelFilm;
     private APIInterface apiInterface;
 
-
+    // Define list model with model <ListModelAddElement> to stock films with Nom et Model.
     DefaultListModel<ListModelAddElement> listModel = new DefaultListModel<>();
+
+    // Define list model with model <ListModelSearch> to stock films with Nom.
     DefaultListModel<ListFilmSearch> listModel2 = new DefaultListModel<>();
 
-
+    // Create main frame 'IhmMain'.
     public static void mainFrame() {
         JFrame frame = new JFrame("IhmMain");
         frame.setContentPane(new IhmMain().mainInterface);
@@ -63,14 +70,25 @@ public class IhmMain extends JFrame {
 
 
     public IhmMain() {
-        // Tmdb tmdb = new Tmdb("89e5521b3e8381cf6adc8f4c8432e07d"); /* This is TMDB API Key */
+        // Tmdb tmdb = new Tmdb("89e5521b3e8381cf6adc8f4c8432e07d");
         apiInterface = API.getAPI().create(APIInterface.class);
         // Create template of URL with API Key
 
+        // Set a ScrollPane List so we can use scroll pane to scroll the film list, inside the scroll pane
+        // we use JList to stocks every films inside TXT.
         scrollPaneListDeFilm.setViewportView(listLesFilm);
+
+        // Set a ScrollPane Text so we can use scroll pane to scroll the film detail, inside the scroll pane
+        // we use JText to show the movie detail.
         scrollPaneTextPane.setViewportView(textPaneMovieDetail);
+
+        // Set the value of JList in Nom, Model
         listLesFilm.setModel(listModel);
+
+        // Show a PNG of "Blue-ray" or "DVD" or "Digital" so that users can find the model of movies more conveniently.
+        // To show more inforfation, go to file ui.MyListUI
         listLesFilm.setCellRenderer(new MyListUI());
+
         StyledDocument styledDocumentTextPane = textPaneMovieDetail.getStyledDocument();
 
         File directory = new File("src/main/resources/film.csv");
@@ -85,7 +103,7 @@ public class IhmMain extends JFrame {
             FileInputStream fin = new FileInputStream(absoultePath);
             InputStreamReader reader = new InputStreamReader(fin);
             BufferedReader buffReader = new BufferedReader(reader);
-            StringBuffer stringBuffer = new StringBuffer();
+//            StringBuffer stringBuffer = new StringBuffer();
             while ((line = buffReader.readLine()) != null) {
                 System.out.println(line);
                 String[] stringFilm = line.split(",");
@@ -179,11 +197,10 @@ public class IhmMain extends JFrame {
         listLesFilm.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                // TODO Frame
                 if (e.getValueIsAdjusting()) {
                     return;
                 }
-                if (listLesFilm.getSelectedIndex() == -1){
+                if (listLesFilm.getSelectedIndex() == -1) {
                     return;
                 }
                 labelFilmImage.setText(null);
@@ -547,9 +564,6 @@ public class IhmMain extends JFrame {
 
                     }
                 });
-
-
-                // TODO search之后，将左侧list改变为search结果，其实就是改变listModel的值
             }
         });
 //
@@ -622,7 +636,7 @@ public class IhmMain extends JFrame {
 
 
                             for (int j = 0; j < listFilmInTxt.size(); j++) {
-                                if(j < listFilmInTxt.size() -1){
+                                if (j < listFilmInTxt.size() - 1) {
                                     try {
                                         FileWriter fw = new FileWriter(absoultePath, true);
                                         fw.write(listFilmInTxt.get(j) + "," + listModeInTxt.get(j) + "," + listFilmIdInTxt.get(j) + "," + listYearInTxt.get(j) + "\n");
@@ -658,8 +672,6 @@ public class IhmMain extends JFrame {
         int filmId;
         String year;
 
-
-        // TODO: Change model after when other disagree......
         public LesFilmsInList(String nomdefilm, String model, int filmId, String year) {
             this.nomdefilm = nomdefilm;
             this.model = model;
