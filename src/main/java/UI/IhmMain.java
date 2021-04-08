@@ -45,7 +45,7 @@ public class IhmMain extends JFrame {
     private JTextPane textPaneMovieDetail;
     private JScrollPane scrollPaneTextPane;
     private JLabel labelFilmImage;
-    private JComboBox comboBoxSort;
+    private JComboBox <String> comboBoxSort;
     private JButton buttonDelFilm;
     private APIInterface apiInterface;
 
@@ -159,6 +159,8 @@ public class IhmMain extends JFrame {
         comboBoxSort.addItem("Name");
         comboBoxSort.addItem("Model");
         comboBoxSort.addItem("Year");
+
+        
 
         comboBoxSort.addActionListener(new ActionListener() {
             @Override
