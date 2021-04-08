@@ -1,4 +1,4 @@
-import ui.IhmMain;
+import UI.IhmMain;
 
 public class main {
     public static void main(String[] args) {

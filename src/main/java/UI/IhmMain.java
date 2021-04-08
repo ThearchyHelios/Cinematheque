@@ -1,4 +1,4 @@
-package ui;
+package UI;
 
 import API.API;
 import API.APIInterface;
@@ -70,9 +70,10 @@ public class IhmMain extends JFrame {
 
 
     public IhmMain() {
+
         // Tmdb tmdb = new Tmdb("89e5521b3e8381cf6adc8f4c8432e07d");
-        apiInterface = API.getAPI().create(APIInterface.class);
         // Create template of URL with API Key
+        apiInterface = API.getAPI().create(APIInterface.class);
 
         // Set a ScrollPane List so we can use scroll pane to scroll the film list, inside the scroll pane
         // we use JList to stocks every films inside TXT.
@@ -86,13 +87,18 @@ public class IhmMain extends JFrame {
         listLesFilm.setModel(listModel);
 
         // Show a PNG of "Blue-ray" or "DVD" or "Digital" so that users can find the model of movies more conveniently.
-        // To show more inforfation, go to file ui.MyListUI
+        // To show more inforfation, go to file ui.MyListUI.
         listLesFilm.setCellRenderer(new MyListUI());
 
+        // Set TextPane as a generic styled document. (To show movie details in style)
         StyledDocument styledDocumentTextPane = textPaneMovieDetail.getStyledDocument();
 
+        // Read films details from file.
         File directory = new File("src/main/resources/film.csv");
         String absoultePath = directory.getAbsolutePath();
+
+        // Create 4 List to store film details, including film name, model, film id and released year.
+        // These 4 lists is only used as buffers after reading file.
         List<String> listFilmInTxt = new ArrayList<String>();
         List<String> listModeInTxt = new ArrayList<String>();
         List<Integer> listFilmIdInTxt = new ArrayList<Integer>();
@@ -101,28 +107,49 @@ public class IhmMain extends JFrame {
         String line = "";
         try {
             FileInputStream fin = new FileInputStream(absoultePath);
+
+            // Use InputStreamReader to read bytes and decodes them into characters
             InputStreamReader reader = new InputStreamReader(fin);
+
+            // Reads text from a character-input stream, buffering characters so as to provide for the
+            // efficient reading of characters, arrays, and lines.
             BufferedReader buffReader = new BufferedReader(reader);
-//            StringBuffer stringBuffer = new StringBuffer();
+
+            // Read each line till last line.
             while ((line = buffReader.readLine()) != null) {
                 System.out.println(line);
+
+                // Spilt each line with ',' to "Name", "Mode", "ID", "Year".
                 String[] stringFilm = line.split(",");
+
+                // Add each name to list.
                 listFilmInTxt.add(stringFilm[0]);
+
+                // Add each mode to list.
                 listModeInTxt.add(stringFilm[1]);
+
+                // Add each ID to list.
+
                 listFilmIdInTxt.add(Integer.valueOf(stringFilm[2]));
+
+                // Add each year to list.
                 listYearInTxt.add(stringFilm[3]);
             }
-            System.out.println(listFilmInTxt);
-            System.out.println(listModeInTxt);
             buffReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        // Instantiate a stable list with using model <Name, Model, ID, Year> to store all film information.
         List<LesFilmsInList> listFilmInList = new ArrayList<>();
 
+
         for (int j = 0; j < listFilmInTxt.size(); j++) {
+
+            // Import film information from buffer lists, to be shown in List of Main Interface.
             listModel.addElement(new ListModelAddElement(listFilmInTxt.get(j) + " ", listModeInTxt.get(j)));
+
+            // Import film information from buffer lists.
             listFilmInList.add(new LesFilmsInList(listFilmInTxt.get(j), listModeInTxt.get(j), listFilmIdInTxt.get(j), listYearInTxt.get(j)));
         }
 
@@ -239,7 +266,7 @@ public class IhmMain extends JFrame {
                         //                    Edit Text Pane
                         try {
                             styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), movieDetail.getTitle(), attributeSetTitle);
-                            styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\nReleaased date: " + movieDetail.getRelease_date() + "\nGenre: ", null);
+                            styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\nReleased date: " + movieDetail.getRelease_date() + "\nGenre: ", null);
                             for (int k = 0; k < movieDetail.getGenres().size(); k++) {
                                 styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), movieDetail.getGenres().get(k).getName() + "  ", null);
                             }
@@ -439,7 +466,7 @@ public class IhmMain extends JFrame {
 
                                             try {
                                                 styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), movieDetail.getTitle(), attributeSetTitle);
-                                                styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\nReleaased date: " + movieDetail.getRelease_date() + "\nGenres: ", null);
+                                                styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\nReleased date: " + movieDetail.getRelease_date() + "\nGenres: ", null);
                                                 for (int k = 0; k < movieDetail.getGenres().size(); k++) {
                                                     styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), movieDetail.getGenres().get(k).getName() + "  ", null);
                                                 }
