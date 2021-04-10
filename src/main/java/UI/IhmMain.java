@@ -49,13 +49,16 @@ public class IhmMain extends JFrame {
     private JButton buttonDelFilm;
     private APIInterface apiInterface;
 
-    // Define list model with model <ListModelAddElement> to stock films with Nom et Model.
+
+    // Define listModel with model ListModelElement to stock films with Nom et Model.
     DefaultListModel<ListModelElement> listModel = new DefaultListModel<>();
 
-    // Define list model with model <ListModelSearch> to stock films with Nom.
+    // Define listModel2 with model ListModelSearch to stock films with Nom.
     DefaultListModel<ListFilmSearch> listModel2 = new DefaultListModel<>();
 
-    // Create main frame 'IhmMain'.
+    /**
+     * Create main frame {@code IhmMain}.
+     */
     public static void mainFrame() {
         JFrame frame = new JFrame("IhmMain");
         frame.setContentPane(new IhmMain().mainInterface);
@@ -71,9 +74,7 @@ public class IhmMain extends JFrame {
 
     public IhmMain() {
 
-        // Tmdb tmdb = new Tmdb("89e5521b3e8381cf6adc8f4c8432e07d");
-
-        // Create template of URL with API Key
+        // Create template of URL with API Key from {@link API.getAPI}
         apiInterface = API.getAPI().create(APIInterface.class);
 
         // Set a ScrollPane List so we can use scroll pane to scroll the film list, inside the scroll pane
@@ -275,36 +276,62 @@ public class IhmMain extends JFrame {
 
                 System.out.println(listLesFilm.getSelectedIndex());
 
-                // Instantiate the value
+                // Instantiate the value to the selected film.
                 LesFilmsInList lesFilmsInListSelected = listFilmInList.get(listLesFilm.getSelectedIndex());
+
+                // Instantiate and get Film ID.
                 int filmId = lesFilmsInListSelected.getFilmId();
 
+                // We use the movie ID to get movie details.
+                // See the api from website below:
+                // https://developers.themoviedb.org/3/movies/get-movie-details
                 Call<Movie.movie_detail> callMovieDetail = apiInterface.get_movie_by_id(filmId, utils.API_KEY);
 
                 callMovieDetail.enqueue(new Callback<Movie.movie_detail>() {
                     @Override
                     public void onResponse(Call<Movie.movie_detail> call, Response<Movie.movie_detail> response) {
+
+                        // Get movie detail by using model Movie.movie_detail from the response which we get from
+                        // website.
                         Movie.movie_detail movieDetail = response.body();
+
+                        // Instantiate a new attribute set for setting the title.
                         SimpleAttributeSet attributeSetTitle = new SimpleAttributeSet();
+
+                        // Set title to Bold.
                         StyleConstants.setBold(attributeSetTitle, true);
+
+                        // Set font size to 30.
                         StyleConstants.setFontSize(attributeSetTitle, 30);
 
+                        // Instantiate a buffered image to stock Poster Image.
                         BufferedImage bufferedImageIcon = null;
 
                         try {
+
+                            // Set buffered image as Poster from URL.
                             bufferedImageIcon = ImageIO.read(new URL("https://image.tmdb.org/t/p/w500" + movieDetail.getPoster_path()));
+
+                            // Instantiate a icon interface to paint icons from image.
                             ImageIcon imageIcon = new ImageIcon(bufferedImageIcon);
                             labelFilmImage.setIcon(imageIcon);
+
+
                         } catch (IOException ioException) {
+
+                            // If we cannot read image from website then return No Image.
                             ioException.printStackTrace();
                             labelFilmImage.setText("NO IMAGE ");
                         } catch (NullPointerException nullPointerException) {
+
+                            // If we cannot get poster path which means this movie is added by ourselves, then
+                            // return This movie is added by myself.
                             nullPointerException.printStackTrace();
                             labelFilmImage.setText("This movie has been added by yourself");
                         }
 
 
-                        //                    Edit Text Pane
+                        // Edit Text Pane
                         try {
                             styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), movieDetail.getTitle(), attributeSetTitle);
                             styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\nReleased date: " + movieDetail.getRelease_date() + "\nGenre: ", null);
