@@ -28,9 +28,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-
-// Yilun JIANG API Key: 89e5521b3e8381cf6adc8f4c8432e07d
-// Author: JIANG WANG KANG
+/**
+ * Project Cinematheque {@link https://github.com/Marshellson/Cinematheque}
+ *
+ */
 
 public class IhmMain extends JFrame {
     private JPanel mainInterface;
@@ -38,7 +39,7 @@ public class IhmMain extends JFrame {
     private JTextField textField1;
     private JButton buttonAddFilm;
     private JLabel labelLesFilms;
-    private JList<ListModelAddElement> listLesFilm;
+    private JList<ListModelElement> listLesFilm;
     private JTextArea textAreafilmInfo;
     private JLabel labelNomDeFilm;
     private JScrollPane scrollPaneListDeFilm;
@@ -49,13 +50,16 @@ public class IhmMain extends JFrame {
     private JButton buttonDelFilm;
     private APIInterface apiInterface;
 
-    // Define list model with model <ListModelAddElement> to stock films with Nom et Model.
-    DefaultListModel<ListModelAddElement> listModel = new DefaultListModel<>();
 
-    // Define list model with model <ListModelSearch> to stock films with Nom.
+    // Define listModel with model ListModelElement to stock films with Nom et Model.
+    DefaultListModel<ListModelElement> listModel = new DefaultListModel<>();
+
+    // Define listModel2 with model ListModelSearch to stock films with Nom.
     DefaultListModel<ListFilmSearch> listModel2 = new DefaultListModel<>();
 
-    // Create main frame 'IhmMain'.
+    /**
+     * Create main frame {@code IhmMain}.
+     */
     public static void mainFrame() {
         JFrame frame = new JFrame("IhmMain");
         frame.setContentPane(new IhmMain().mainInterface);
@@ -71,9 +75,7 @@ public class IhmMain extends JFrame {
 
     public IhmMain() {
 
-        // Tmdb tmdb = new Tmdb("89e5521b3e8381cf6adc8f4c8432e07d");
-
-        // Create template of URL with API Key
+        // Create template of URL with API Key from {@link API.getAPI}
         apiInterface = API.getAPI().create(APIInterface.class);
 
         // Set a ScrollPane List so we can use scroll pane to scroll the film list, inside the scroll pane
@@ -148,26 +150,30 @@ public class IhmMain extends JFrame {
         for (int j = 0; j < listFilmInTxt.size(); j++) {
 
             // Import film information from buffer lists, to be shown in List of Main Interface.
-            listModel.addElement(new ListModelAddElement(listFilmInTxt.get(j) + " ", listModeInTxt.get(j)));
+            listModel.addElement(new ListModelElement(listFilmInTxt.get(j) + " ", listModeInTxt.get(j)));
 
             // Import film information from buffer lists.
             listFilmInList.add(new LesFilmsInList(listFilmInTxt.get(j), listModeInTxt.get(j), listFilmIdInTxt.get(j), listYearInTxt.get(j)));
         }
 
-
+        // Add 4 sort model to combobox.
         comboBoxSort.addItem("Sort");
         comboBoxSort.addItem("Name");
         comboBoxSort.addItem("Model");
         comboBoxSort.addItem("Year");
 
         
-
+        // Instantiate a action listener to check if the context of combobox is selected.
         comboBoxSort.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                // Check if the selected item is "Sort", the order of films will be the same order as txt file.
                 if (comboBoxSort.getSelectedItem() == "Sort") {
+
+                    // Instantiate a new buffer file reader to read the film detail.
                     File directory = new File("src/main/resources/film.csv");
-                    String absoultePath = directory.getAbsolutePath();
+                    String absolutePath = directory.getAbsolutePath();
                     List<String> listFilmInTxt = new ArrayList<String>();
                     List<String> listModeInTxt = new ArrayList<String>();
                     List<Integer> listFilmIdInTxt = new ArrayList<Integer>();
@@ -175,10 +181,9 @@ public class IhmMain extends JFrame {
 
                     String line = "";
                     try {
-                        FileInputStream fin = new FileInputStream(absoultePath);
+                        FileInputStream fin = new FileInputStream(absolutePath);
                         InputStreamReader reader = new InputStreamReader(fin);
                         BufferedReader buffReader = new BufferedReader(reader);
-                        StringBuffer stringBuffer = new StringBuffer();
                         while ((line = buffReader.readLine()) != null) {
                             System.out.println(line);
                             String[] stringFilm = line.split(",");
@@ -193,80 +198,141 @@ public class IhmMain extends JFrame {
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
+
                     for (int j = 0; j < listFilmInTxt.size(); j++) {
-                        listModel.set(j, new ListModelAddElement(listFilmInTxt.get(j) + " ", listModeInTxt.get(j)));
+                        // Import film information from buffer lists, to be shown in List of Main Interface.
+                        listModel.set(j, new ListModelElement(listFilmInTxt.get(j) + " ", listModeInTxt.get(j)));
+
+                        // Import film information from buffer lists.
                         listFilmInList.set(j, new LesFilmsInList(listFilmInTxt.get(j), listModeInTxt.get(j), listFilmIdInTxt.get(j), listYearInTxt.get(j)));
                     }
+
+                // Check if the selected item is "Model", the order of films will be sorted by model.
                 } else if (comboBoxSort.getSelectedItem() == "Model") {
+
+                    // Compare models from list, then sort models.
                     Collections.sort(listFilmInList, FilmModelComparator);
+
+                    // Reset listmodel from list.
                     for (int i = 0; i < listFilmInList.size(); i++) {
-                        listModel.set(i, new ListModelAddElement(listFilmInList.get(i).getNomdefilm(), listFilmInList.get(i).getModel()));
+                        listModel.set(i, new ListModelElement(listFilmInList.get(i).getNomdefilm(), listFilmInList.get(i).getModel()));
                     }
+
+                    // Refresh list.
                     listLesFilm.setModel(listModel);
+
+                // Check if the selected item is "Name", the order of films will be sorted by name.
                 } else if (comboBoxSort.getSelectedItem() == "Name") {
 
+                    // Compare names from list, then sort names.
                     Collections.sort(listFilmInList, FilmNameComparator);
+
+                    // Reset listmodel from list.
                     for (int i = 0; i < listFilmInList.size(); i++) {
-                        listModel.set(i, new ListModelAddElement(listFilmInList.get(i).getNomdefilm(), listFilmInList.get(i).getModel()));
+                        listModel.set(i, new ListModelElement(listFilmInList.get(i).getNomdefilm(), listFilmInList.get(i).getModel()));
                     }
+
+                    // Refresh list.
                     listLesFilm.setModel(listModel);
 
-                    return;
+                // Check if the selected item is "Year", the order of films will be sorted by release date.
                 } else if (comboBoxSort.getSelectedItem() == "Year") {
+
+                    // Compare names from list, then sort year.
                     Collections.sort(listFilmInList, FilmYearComparator);
+
+                    // Reset listmodel from list.
                     for (int i = 0; i < listFilmInList.size(); i++) {
-                        listModel.set(i, new ListModelAddElement(listFilmInList.get(i).getNomdefilm(), listFilmInList.get(i).getModel()));
+                        listModel.set(i, new ListModelElement(listFilmInList.get(i).getNomdefilm(), listFilmInList.get(i).getModel()));
                     }
+
+                    // Refresh list
                     listLesFilm.setModel(listModel);
                 }
 
             }
         });
 
-
+        // Add selection listener to catch if the list is selected.
         listLesFilm.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
+
+                // Get the value only when the left key is released.
                 if (e.getValueIsAdjusting()) {
                     return;
                 }
+
+                // Eliminate the problem when the pointer is at -1
                 if (listLesFilm.getSelectedIndex() == -1) {
                     return;
                 }
+
+                // Initialize the value of the picture
                 labelFilmImage.setText(null);
                 labelFilmImage.setIcon(null);
+
+                // Initialize the value of pane.
                 textPaneMovieDetail.setText(null);
 
                 System.out.println(listLesFilm.getSelectedIndex());
+
+                // Instantiate the value to the selected film.
                 LesFilmsInList lesFilmsInListSelected = listFilmInList.get(listLesFilm.getSelectedIndex());
+
+                // Instantiate and get Film ID.
                 int filmId = lesFilmsInListSelected.getFilmId();
 
+                // We use the movie ID to get movie details.
+                // See the api from website below:
+                // https://developers.themoviedb.org/3/movies/get-movie-details
                 Call<Movie.movie_detail> callMovieDetail = apiInterface.get_movie_by_id(filmId, utils.API_KEY);
 
                 callMovieDetail.enqueue(new Callback<Movie.movie_detail>() {
                     @Override
                     public void onResponse(Call<Movie.movie_detail> call, Response<Movie.movie_detail> response) {
+
+                        // Get movie detail by using model Movie.movie_detail from the response which we get from
+                        // website.
                         Movie.movie_detail movieDetail = response.body();
+
+                        // Instantiate a new attribute set for setting the title.
                         SimpleAttributeSet attributeSetTitle = new SimpleAttributeSet();
+
+                        // Set title to Bold.
                         StyleConstants.setBold(attributeSetTitle, true);
+
+                        // Set font size to 30.
                         StyleConstants.setFontSize(attributeSetTitle, 30);
 
+                        // Instantiate a buffered image to stock Poster Image.
                         BufferedImage bufferedImageIcon = null;
 
                         try {
+
+                            // Set buffered image as Poster from URL.
                             bufferedImageIcon = ImageIO.read(new URL("https://image.tmdb.org/t/p/w500" + movieDetail.getPoster_path()));
+
+                            // Instantiate a icon interface to paint icons from image.
                             ImageIcon imageIcon = new ImageIcon(bufferedImageIcon);
                             labelFilmImage.setIcon(imageIcon);
+
+
                         } catch (IOException ioException) {
+
+                            // If we cannot read image from website then return No Image.
                             ioException.printStackTrace();
                             labelFilmImage.setText("NO IMAGE ");
                         } catch (NullPointerException nullPointerException) {
+
+                            // If we cannot get poster path which means this movie is added by ourselves, then
+                            // return This movie is added by myself.
                             nullPointerException.printStackTrace();
                             labelFilmImage.setText("This movie has been added by yourself");
                         }
 
 
-                        //                    Edit Text Pane
+                        // Edit Text Pane
                         try {
                             styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), movieDetail.getTitle(), attributeSetTitle);
                             styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\nReleased date: " + movieDetail.getRelease_date() + "\nGenre: ", null);
@@ -352,7 +418,7 @@ public class IhmMain extends JFrame {
                             fw.write("\n" + textFieldFilmNameAddFilmToTxt.getText() + "," + comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString() + "," + 0 + "," + 0);
                             fw.close();
 
-                            listModel.addElement(new ListModelAddElement(textFieldFilmNameAddFilmToTxt.getText(), comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString()));
+                            listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxt.getText(), comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString()));
                             listFilmInList.add(new LesFilmsInList(textFieldFilmNameAddFilmToTxt.getText(), comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString(), 0, "0"));
                             frameAddFilmToTxt.setVisible(false);
 
@@ -485,6 +551,10 @@ public class IhmMain extends JFrame {
                                                 @Override
                                                 public void actionPerformed(ActionEvent e) {
 
+                                                    if(listSearch.getSelectedIndex() > 1){
+                                                        System.out.println(listSearch.getSelectedIndex());
+                                                    }
+
                                                     JFrame frameAddFilmFromSearch = new JFrame("Add Film From Search");
                                                     frameAddFilmFromSearch.setVisible(true);
                                                     frameAddFilmFromSearch.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -539,9 +609,6 @@ public class IhmMain extends JFrame {
                                                                     return;
                                                                 }
                                                             }
-                                                            listModel.addElement(new ListModelAddElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
-                                                            listFilmInList.add(new LesFilmsInList(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), movieDetail.getRelease_date()));
-                                                            frameAddFilmFromSearch.setVisible(false);
 
 
                                                             try {
@@ -555,6 +622,11 @@ public class IhmMain extends JFrame {
                                                                     JOptionPane.showMessageDialog(null, "You cannot contains Digital in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
                                                                     return;
                                                                 }
+
+                                                                listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
+                                                                listFilmInList.add(new LesFilmsInList(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), movieDetail.getRelease_date()));
+                                                                frameAddFilmFromSearch.setVisible(false);
+
                                                                 FileWriter fw = new FileWriter(absoultePath, true);
                                                                 fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," + movieDetail.getRelease_date());
                                                                 fw.close();
@@ -610,9 +682,7 @@ public class IhmMain extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int indexDelFilm = listLesFilm.getSelectedIndex();
                 System.out.println(indexDelFilm);
-                //Trim() to delete the Space in the back of Name
-                String stringDelFilmNom = new String(listModel.get(indexDelFilm).getNom());
-                stringDelFilmNom = stringDelFilmNom.substring(0, stringDelFilmNom.length() - 1);
+                String stringDelFilmNom = new String(listFilmInList.get(indexDelFilm).getNomdefilm());
                 // Delete Last Space in String
                 System.out.println(stringDelFilmNom);
 
@@ -643,6 +713,8 @@ public class IhmMain extends JFrame {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
+
+
                 for (int i = 0; i < listFilmInTxt.size(); i++) {
 //                    System.out.println(listFilmInTxt.get(i));
                     if (listFilmInTxt.get(i).equals(stringDelFilmNom)) {
@@ -744,11 +816,11 @@ public class IhmMain extends JFrame {
 
     }
 
-    public class ListModelAddElement {
+    public class ListModelElement {
         String nom;
         String model;
 
-        public ListModelAddElement(String nom, String model) {
+        public ListModelElement(String nom, String model) {
             this.nom = nom;
             this.model = model;
         }
