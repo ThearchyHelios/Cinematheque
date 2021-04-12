@@ -38,8 +38,8 @@ public class MyListUI extends DefaultListCellRenderer {
             setIcon(ico);
 
         } else if (value.toString().contains("B-ray")) {
-            String absolutePath_Bery = Bray_png.getAbsolutePath();
-            ImageIcon ico = new ImageIcon(absolutePath_Bery);
+            String absolutePath_Bray = Bray_png.getAbsolutePath();
+            ImageIcon ico = new ImageIcon(absolutePath_Bray);
             Image img = ico.getImage();
             img = img.getScaledInstance(50, 25, Image.SCALE_DEFAULT);
             ico.setImage(img);

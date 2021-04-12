@@ -455,6 +455,7 @@ public class IhmMain extends JFrame {
                             JScrollPane jScrollPaneSearch = new JScrollPane(listSearch);
                             jScrollPaneSearch.setSize(600, 600);
 
+
                             JTextPane jTextPaneSearch = new JTextPane();
                             jTextPaneSearch.setSize(400, 300);
                             StyledDocument styledDocumentTextpaneSearch = jTextPaneSearch.getStyledDocument();
@@ -462,12 +463,13 @@ public class IhmMain extends JFrame {
 
                             JButton jButtonAddToList = new JButton();
                             jButtonAddToList.setText("Add To Library");
+                            jButtonAddToList.setFont(new Font("Monaco", Font.BOLD, 20));
 
                             JLabel jLabelPostImage = new JLabel();
 
 
                             JPanel panelSearchCenter = new JPanel();
-                            JPanel panelSearchEast = new JPanel();
+                            JPanel panelSearchNorth = new JPanel();
 
                             panelSearchCenter.add(jTextPaneSearch);
 //                            panelSearchWest.add(jTextPaneSearch);
@@ -477,6 +479,8 @@ public class IhmMain extends JFrame {
 //                            frame_search.add(jScrollPaneTextPaneSearch, BorderLayout.EAST);
                             frameSearch.add(jLabelPostImage, BorderLayout.WEST);
                             frameSearch.add(jButtonAddToList, BorderLayout.SOUTH);
+
+
 //                            frame_search.add(panelSearchCenter, BorderLayout.CENTER);
 
                             for (int j = 0; j < searchMovie.getResults().size(); j++) {
