@@ -55,7 +55,7 @@ public class IhmMain extends JFrame {
     DefaultListModel<ListModelElement> listModel = new DefaultListModel<>();
 
     // Define listModel2 with model ListModelSearch to stock films with Nom.
-    DefaultListModel<ListFilmSearch> listModel2 = new DefaultListModel<>();
+    DefaultListModel<ListFilmSearchModel> listModel2 = new DefaultListModel<>();
 
     /**
      * Create main frame {@code IhmMain}.
@@ -448,7 +448,7 @@ public class IhmMain extends JFrame {
                             frameSearch.setVisible(true);
                             frameSearch.setDefaultCloseOperation(HIDE_ON_CLOSE);
                             frameSearch.setSize(700, 500);
-                            JList<ListFilmSearch> listSearch = new JList<>();
+                            JList<ListFilmSearchModel> listSearch = new JList<>();
                             listSearch.setModel(listModel2);
 
 
@@ -481,8 +481,8 @@ public class IhmMain extends JFrame {
 
                             for (int j = 0; j < searchMovie.getResults().size(); j++) {
                                 List<Movie.movie_detail> listMovieDetail = searchMovie.getResults();
-                                listModel2.addElement(new ListFilmSearch(listMovieDetail.get(j).getTitle()));
-                                searchResultArrayList.add(new SearchResult(listMovieDetail.get(j).getTitle(), listMovieDetail.get(j).getId()));
+                                listModel2.addElement(new ListFilmSearchModel(listMovieDetail.get(j).getTitle()));
+                                searchResultArrayList.add(new SearchResult(listMovieDetail.get(j).getTitle(), listMovieDetail.get(j).getId(), listMovieDetail.get(j).getRelease_date()));
                             }
 
 
@@ -505,6 +505,7 @@ public class IhmMain extends JFrame {
                                     }
 
                                     int searchResultFilmId = searchResultIndex.iddefilm;
+                                    String searchResultFilmNom = searchResultIndex.nomdefilm;
 
 
                                     Call<Movie.movie_detail> callMovieDetail = apiInterface.get_movie_by_id(searchResultFilmId, utils.API_KEY);
@@ -545,104 +546,6 @@ public class IhmMain extends JFrame {
                                             } catch (BadLocationException badLocationException) {
                                                 badLocationException.printStackTrace();
                                             }
-
-
-                                            jButtonAddToList.addActionListener(new ActionListener() {
-                                                @Override
-                                                public void actionPerformed(ActionEvent e) {
-
-                                                    if(listSearch.getSelectedIndex() > 1){
-                                                        System.out.println(listSearch.getSelectedIndex());
-                                                    }
-
-                                                    JFrame frameAddFilmFromSearch = new JFrame("Add Film From Search");
-                                                    frameAddFilmFromSearch.setVisible(true);
-                                                    frameAddFilmFromSearch.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-
-                                                    JPanel jPanel1 = new JPanel();
-                                                    JPanel jPanel3 = new JPanel();
-                                                    JPanel jPanel2 = new JPanel();
-
-
-                                                    frameAddFilmFromSearch.setSize(500, 200);
-
-                                                    JLabel label1AddFilmToTxtFrameSearch = new JLabel("Name: ");
-                                                    JTextField textFieldFilmNameAddFilmToTxtFrameSearch = new JTextField(10);
-                                                    textFieldFilmNameAddFilmToTxtFrameSearch.setText(movieDetail.getTitle());
-                                                    JLabel label2AddFilmToTxtFrameSearch = new JLabel("ID:   ");
-                                                    JTextField textFieldFilmIdAddFilmToTxtFrameSearch = new JTextField(10);
-                                                    textFieldFilmIdAddFilmToTxtFrameSearch.setText(String.valueOf(movieDetail.getId()));
-                                                    textFieldFilmNameAddFilmToTxtFrameSearch.setSize(300, -1);
-
-
-                                                    jPanel1.add(label1AddFilmToTxtFrameSearch);
-                                                    jPanel1.add(textFieldFilmNameAddFilmToTxtFrameSearch);
-                                                    jPanel2.add(label2AddFilmToTxtFrameSearch);
-                                                    jPanel2.add(textFieldFilmIdAddFilmToTxtFrameSearch);
-
-                                                    textFieldFilmNameAddFilmToTxtFrameSearch.setEditable(false);
-                                                    textFieldFilmIdAddFilmToTxtFrameSearch.setEditable(false);
-
-                                                    JLabel label3AddFilmToTxtFrameSearch = new JLabel("Type: ");
-                                                    JComboBox<String> comboBoxFilmModeAddFilmToTxtFrameSearch = new JComboBox<String>();
-                                                    JButton buttonConfirmAddfilmToTextFrameSearch = new JButton("Confirm");
-                                                    comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("DVD");
-                                                    comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("B-ray");
-                                                    comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("Digital");
-
-                                                    jPanel3.add(label3AddFilmToTxtFrameSearch);
-                                                    jPanel3.add(comboBoxFilmModeAddFilmToTxtFrameSearch);
-                                                    jPanel3.add(buttonConfirmAddfilmToTextFrameSearch);
-
-
-                                                    frameAddFilmFromSearch.add(jPanel1, BorderLayout.NORTH);
-                                                    frameAddFilmFromSearch.add(jPanel2, BorderLayout.CENTER);
-                                                    frameAddFilmFromSearch.add(jPanel3, BorderLayout.SOUTH);
-
-                                                    buttonConfirmAddfilmToTextFrameSearch.addActionListener(new ActionListener() {
-                                                        @Override
-                                                        public void actionPerformed(ActionEvent e) {
-                                                            for (int i = 0; i < listFilmInList.size(); i++) {
-                                                                if (listFilmInList.get(i).getFilmId() == Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())) {
-                                                                    JOptionPane.showConfirmDialog(null, "This movie is already existe!", "Error", JOptionPane.PLAIN_MESSAGE);
-                                                                    frameAddFilmFromSearch.setVisible(false);
-                                                                    return;
-                                                                }
-                                                            }
-
-
-                                                            try {
-                                                                if (textFieldFilmNameAddFilmToTxtFrameSearch.getText().contains("DVD")) {
-                                                                    JOptionPane.showMessageDialog(null, "You cannot contains DVD in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                                                                    return;
-                                                                } else if (textFieldFilmNameAddFilmToTxtFrameSearch.getText().contains("B-ray")) {
-                                                                    JOptionPane.showMessageDialog(null, "You cannot contains B-ray in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                                                                    return;
-                                                                } else if (textFieldFilmNameAddFilmToTxtFrameSearch.getText().contains("Digital")) {
-                                                                    JOptionPane.showMessageDialog(null, "You cannot contains Digital in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                                                                    return;
-                                                                }
-
-                                                                listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
-                                                                listFilmInList.add(new LesFilmsInList(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), movieDetail.getRelease_date()));
-                                                                frameAddFilmFromSearch.setVisible(false);
-
-                                                                FileWriter fw = new FileWriter(absoultePath, true);
-                                                                fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," + movieDetail.getRelease_date());
-                                                                fw.close();
-
-
-                                                            } catch (IOException ioException) {
-                                                                ioException.printStackTrace();
-                                                            }
-
-                                                        }
-                                                    });
-
-                                                }
-                                            });
-
-
                                         }
 
 
@@ -653,6 +556,103 @@ public class IhmMain extends JFrame {
                                     });
                                 }
                             });
+
+                            jButtonAddToList.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+
+
+
+                                    System.out.println(searchResultArrayList.get(listSearch.getSelectedIndex()).nomdefilm);
+                                    System.out.println(searchResultArrayList.get(listSearch.getSelectedIndex()).iddefilm);
+
+                                    JFrame frameAddFilmFromSearch = new JFrame("Add Film From Search");
+                                    frameAddFilmFromSearch.setVisible(true);
+                                    frameAddFilmFromSearch.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+
+                                    JPanel jPanel1 = new JPanel();
+                                    JPanel jPanel3 = new JPanel();
+                                    JPanel jPanel2 = new JPanel();
+
+
+                                    frameAddFilmFromSearch.setSize(500, 200);
+
+                                    JLabel label1AddFilmToTxtFrameSearch = new JLabel("Name: ");
+                                    JTextField textFieldFilmNameAddFilmToTxtFrameSearch = new JTextField(10);
+                                    textFieldFilmNameAddFilmToTxtFrameSearch.setText(searchResultArrayList.get(listSearch.getSelectedIndex()).nomdefilm);
+                                    JLabel label2AddFilmToTxtFrameSearch = new JLabel("ID:   ");
+                                    JTextField textFieldFilmIdAddFilmToTxtFrameSearch = new JTextField(10);
+                                    textFieldFilmIdAddFilmToTxtFrameSearch.setText(String.valueOf(searchResultArrayList.get(listSearch.getSelectedIndex()).iddefilm));
+                                    textFieldFilmNameAddFilmToTxtFrameSearch.setSize(300, -1);
+
+
+                                    jPanel1.add(label1AddFilmToTxtFrameSearch);
+                                    jPanel1.add(textFieldFilmNameAddFilmToTxtFrameSearch);
+                                    jPanel2.add(label2AddFilmToTxtFrameSearch);
+                                    jPanel2.add(textFieldFilmIdAddFilmToTxtFrameSearch);
+
+                                    textFieldFilmNameAddFilmToTxtFrameSearch.setEditable(false);
+                                    textFieldFilmIdAddFilmToTxtFrameSearch.setEditable(false);
+
+                                    JLabel label3AddFilmToTxtFrameSearch = new JLabel("Type: ");
+                                    JComboBox<String> comboBoxFilmModeAddFilmToTxtFrameSearch = new JComboBox<String>();
+                                    JButton buttonConfirmAddfilmToTextFrameSearch = new JButton("Confirm");
+                                    comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("DVD");
+                                    comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("B-ray");
+                                    comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("Digital");
+
+                                    jPanel3.add(label3AddFilmToTxtFrameSearch);
+                                    jPanel3.add(comboBoxFilmModeAddFilmToTxtFrameSearch);
+                                    jPanel3.add(buttonConfirmAddfilmToTextFrameSearch);
+
+
+                                    frameAddFilmFromSearch.add(jPanel1, BorderLayout.NORTH);
+                                    frameAddFilmFromSearch.add(jPanel2, BorderLayout.CENTER);
+                                    frameAddFilmFromSearch.add(jPanel3, BorderLayout.SOUTH);
+
+                                    buttonConfirmAddfilmToTextFrameSearch.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            for (int i = 0; i < listFilmInList.size(); i++) {
+                                                if (listFilmInList.get(i).getFilmId() == Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())) {
+                                                    JOptionPane.showConfirmDialog(null, "This movie is already existe!", "Error", JOptionPane.PLAIN_MESSAGE);
+                                                    frameAddFilmFromSearch.setVisible(false);
+                                                    return;
+                                                }
+                                            }
+
+
+                                            try {
+                                                if (textFieldFilmNameAddFilmToTxtFrameSearch.getText().contains("DVD")) {
+                                                    JOptionPane.showMessageDialog(null, "You cannot contains DVD in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                                                    return;
+                                                } else if (textFieldFilmNameAddFilmToTxtFrameSearch.getText().contains("B-ray")) {
+                                                    JOptionPane.showMessageDialog(null, "You cannot contains B-ray in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                                                    return;
+                                                } else if (textFieldFilmNameAddFilmToTxtFrameSearch.getText().contains("Digital")) {
+                                                    JOptionPane.showMessageDialog(null, "You cannot contains Digital in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                                                    return;
+                                                }
+
+                                                listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
+                                                listFilmInList.add(new LesFilmsInList(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), searchResultArrayList.get(listSearch.getSelectedIndex()).release_date));
+                                                frameAddFilmFromSearch.setVisible(false);
+
+                                                FileWriter fw = new FileWriter(absoultePath, true);
+                                                fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," +searchResultArrayList.get(listSearch.getSelectedIndex()).release_date);
+                                                fw.close();
+
+
+                                            } catch (IOException ioException) {
+                                                ioException.printStackTrace();
+                                            }
+
+                                        }
+                                    });
+
+                                }
+                            });
+
                         } else if (response.body().getTotal_results() == 0) {
                             JOptionPane.showMessageDialog(null, "No result!");
                         }
@@ -847,11 +847,11 @@ public class IhmMain extends JFrame {
         }
     }
 
-    public class ListFilmSearch {
+    public class ListFilmSearchModel {
         String nomdefilm;
 
 
-        public ListFilmSearch(String nomdefilm) {
+        public ListFilmSearchModel(String nomdefilm) {
             this.nomdefilm = nomdefilm;
 
         }
@@ -875,10 +875,20 @@ public class IhmMain extends JFrame {
     public class SearchResult {
         String nomdefilm;
         int iddefilm;
+        String release_date;
 
-        public SearchResult(String nomdefilm, int iddefilm) {
+        public SearchResult(String nomdefilm, int iddefilm, String release_date) {
             this.nomdefilm = nomdefilm;
             this.iddefilm = iddefilm;
+            this.release_date = release_date;
+        }
+
+        public String getRelease_date() {
+            return release_date;
+        }
+
+        public void setRelease_date(String release_date) {
+            this.release_date = release_date;
         }
 
         public String getNomdefilm() {
