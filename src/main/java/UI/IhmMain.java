@@ -28,9 +28,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-
-// Yilun JIANG API Key: 89e5521b3e8381cf6adc8f4c8432e07d
-// Author: JIANG WANG KANG
+/**
+ * Project Cinematheque {@link https://github.com/Marshellson/Cinematheque}
+ *
+ */
 
 public class IhmMain extends JFrame {
     private JPanel mainInterface;
@@ -550,6 +551,10 @@ public class IhmMain extends JFrame {
                                                 @Override
                                                 public void actionPerformed(ActionEvent e) {
 
+                                                    if(listSearch.getSelectedIndex() > 1){
+                                                        System.out.println(listSearch.getSelectedIndex());
+                                                    }
+
                                                     JFrame frameAddFilmFromSearch = new JFrame("Add Film From Search");
                                                     frameAddFilmFromSearch.setVisible(true);
                                                     frameAddFilmFromSearch.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -604,9 +609,6 @@ public class IhmMain extends JFrame {
                                                                     return;
                                                                 }
                                                             }
-                                                            listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
-                                                            listFilmInList.add(new LesFilmsInList(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), movieDetail.getRelease_date()));
-                                                            frameAddFilmFromSearch.setVisible(false);
 
 
                                                             try {
@@ -620,6 +622,11 @@ public class IhmMain extends JFrame {
                                                                     JOptionPane.showMessageDialog(null, "You cannot contains Digital in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
                                                                     return;
                                                                 }
+
+                                                                listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
+                                                                listFilmInList.add(new LesFilmsInList(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), movieDetail.getRelease_date()));
+                                                                frameAddFilmFromSearch.setVisible(false);
+
                                                                 FileWriter fw = new FileWriter(absoultePath, true);
                                                                 fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," + movieDetail.getRelease_date());
                                                                 fw.close();
