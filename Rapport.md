@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/Marshellson/Cinematheque/rapport/15232.svg" width="250px" />
+<img src="https://raw.githubusercontent.com/Marshellson/Cinematheque/012237b44f73f83f6dd1a0b8080fd51150b10f6d/rapport_image/15232.svg" width="250px" />
 &nbsp;
 
 &nbsp;
@@ -44,7 +44,6 @@ Contributeurs: JIANG Yilun, KANG Zhuodong, WANG Haoyu
 &nbsp;
 
 &nbsp;
-
 
 
 
