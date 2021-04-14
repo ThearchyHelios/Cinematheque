@@ -72,7 +72,9 @@ public class IhmMain extends JFrame {
         mainFrame();
     }
 
-
+    /**
+     * TODO: add notes here
+     */
     public IhmMain() {
 
         // Create template of URL with API Key from {@link API.getAPI}
@@ -332,20 +334,36 @@ public class IhmMain extends JFrame {
                         }
 
 
-                        // Edit Text Pane
                         try {
+
+                            // Import movie detail into text pane.
+                            // Import formatted title into text pane.
                             styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), movieDetail.getTitle(), attributeSetTitle);
+
+                            // Import released date into text pane.
                             styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\nReleased date: " + movieDetail.getRelease_date() + "\nGenre: ", null);
+
+                            // Import Genre(s) into text pane.
                             for (int k = 0; k < movieDetail.getGenres().size(); k++) {
                                 styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), movieDetail.getGenres().get(k).getName() + "  ", null);
                             }
+
+                            // Import abstract into text pane.
                             styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\n\nAbstract:  " + movieDetail.getOverview(), null);
+
+                            // Import movie run time into text pane.
                             styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\n\nRun time: " + movieDetail.getRuntime() + "min", null);
+
+                            // Import movie score (*/10) into text pane
                             styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "\nMark: " + movieDetail.getVote_average() + "/10", null);
                         } catch (BadLocationException badLocationException) {
+
+                            //  This exception is to report bad locations within a document model
+                            //  (that is, attempts to reference a location that doesn't exist).
                             badLocationException.printStackTrace();
                         } catch (NullPointerException nullPointerException) {
                             try {
+                                // If throwing null then means the movie is added by ourselves.
                                 styledDocumentTextPane.insertString(styledDocumentTextPane.getLength(), "This movie has no detail", null);
                             } catch (BadLocationException badLocationException) {
                                 badLocationException.printStackTrace();
@@ -364,11 +382,10 @@ public class IhmMain extends JFrame {
             }
         });
 
-
+        // Add action Listener to catch if button is clicked.
         buttonAddFilm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 JFrame frameAddFilmToTxt = new JFrame("Add films");
                 frameAddFilmToTxt.setVisible(true);
                 frameAddFilmToTxt.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -394,26 +411,19 @@ public class IhmMain extends JFrame {
                 jPanel2.add(comboBoxFilmModeAddFilmToTxt);
                 jPanel2.add(buttonConfirmAddfilmToText);
 
-
                 frameAddFilmToTxt.add(jPanel1, BorderLayout.NORTH);
-
                 frameAddFilmToTxt.add(jPanel2, BorderLayout.CENTER);
 
-
+                // Add action listener to catch if button is clicked.
                 buttonConfirmAddfilmToText.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        // Check if the movie title contains model names(DVD, B-ray, Digital)
+                        // If the movie title contains model names without this judgement then the model icon will wrong
+                        // display.
+
                         try {
-                            if (textFieldFilmNameAddFilmToTxt.getText().contains("DVD")) {
-                                JOptionPane.showMessageDialog(null, "You cannot contains DVD in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                                return;
-                            } else if (textFieldFilmNameAddFilmToTxt.getText().contains("B-ray")) {
-                                JOptionPane.showMessageDialog(null, "You cannot contains B-ray in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                                return;
-                            } else if (textFieldFilmNameAddFilmToTxt.getText().contains("Digital")) {
-                                JOptionPane.showMessageDialog(null, "You cannot contains Digital in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                                return;
-                            }
+
                             FileWriter fw = new FileWriter(absoultePath, true);
                             fw.write("\n" + textFieldFilmNameAddFilmToTxt.getText() + "," + comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString() + "," + 0 + "," + 0);
                             fw.close();
@@ -490,7 +500,7 @@ public class IhmMain extends JFrame {
                             }
 
 
-                            listSearch.addListSelectionListener(new ListSelectionListener() { // TODO Bug  1
+                            listSearch.addListSelectionListener(new ListSelectionListener() {
                                 @Override
                                 public void valueChanged(ListSelectionEvent e) {
                                     if (e.getValueIsAdjusting()) {
@@ -565,8 +575,6 @@ public class IhmMain extends JFrame {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
 
-
-
                                     System.out.println(searchResultArrayList.get(listSearch.getSelectedIndex()).nomdefilm);
                                     System.out.println(searchResultArrayList.get(listSearch.getSelectedIndex()).iddefilm);
 
@@ -627,16 +635,6 @@ public class IhmMain extends JFrame {
 
 
                                             try {
-                                                if (textFieldFilmNameAddFilmToTxtFrameSearch.getText().contains("DVD")) {
-                                                    JOptionPane.showMessageDialog(null, "You cannot contains DVD in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                                                    return;
-                                                } else if (textFieldFilmNameAddFilmToTxtFrameSearch.getText().contains("B-ray")) {
-                                                    JOptionPane.showMessageDialog(null, "You cannot contains B-ray in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                                                    return;
-                                                } else if (textFieldFilmNameAddFilmToTxtFrameSearch.getText().contains("Digital")) {
-                                                    JOptionPane.showMessageDialog(null, "You cannot contains Digital in film name", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                                                    return;
-                                                }
 
                                                 listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
                                                 listFilmInList.add(new LesFilmsInList(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), searchResultArrayList.get(listSearch.getSelectedIndex()).release_date));

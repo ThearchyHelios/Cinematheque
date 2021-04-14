@@ -17,7 +17,11 @@ public class MyListUI extends DefaultListCellRenderer {
         File Digital_png = new File("src/main/resources/Digital.png");
 
         // Determine whether DVD exists in Text (or B-ray or digital).
-        if (value.toString().contains("DVD")) {
+
+        String model_string_spilt[] = value.toString().split("\n", -1);
+        String model = model_string_spilt[1];
+
+        if (model.contains("DVD")) {
 
             // Considering the differences in path expression in operating systems, we use the method getAbsolutePath.
             String absolutePath_DVD = DVD_png.getAbsolutePath();
@@ -37,7 +41,7 @@ public class MyListUI extends DefaultListCellRenderer {
             // Set Image
             setIcon(ico);
 
-        } else if (value.toString().contains("B-ray")) {
+        } else if (model.contains("B-ray")) {
             String absolutePath_Bray = Bray_png.getAbsolutePath();
             ImageIcon ico = new ImageIcon(absolutePath_Bray);
             Image img = ico.getImage();
@@ -45,7 +49,7 @@ public class MyListUI extends DefaultListCellRenderer {
             ico.setImage(img);
             setIcon(ico);
 
-        } else if (value.toString().contains("Digital")) {
+        } else if (model.contains("Digital")) {
             String absolutePath_Digital = Digital_png.getAbsolutePath();
             ImageIcon ico = new ImageIcon(absolutePath_Digital);
             Image img = ico.getImage();
@@ -67,7 +71,7 @@ public class MyListUI extends DefaultListCellRenderer {
 
             System.out.println("No." + index + " has been selected");
 
-        // Set whrn is not been selected.
+            // Set when is not been selected.
         } else {
 
             // Set the text color to black.
