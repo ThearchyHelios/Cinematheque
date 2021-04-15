@@ -637,7 +637,7 @@ public class IhmMain extends JFrame {
                                             try {
 
                                                 listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
-                                                listFilmInList.add(new LesFilmsInList(textFieldFilmIdAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), searchResultArrayList.get(listSearch.getSelectedIndex()).release_date));
+                                                listFilmInList.add(new LesFilmsInList(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), searchResultArrayList.get(listSearch.getSelectedIndex()).release_date));
                                                 frameAddFilmFromSearch.setVisible(false);
 
                                                 FileWriter fw = new FileWriter(absoultePath, true);
