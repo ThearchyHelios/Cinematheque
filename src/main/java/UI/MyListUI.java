@@ -69,8 +69,6 @@ public class MyListUI extends DefaultListCellRenderer {
             // Set the background color to blue
             setBackground(Color.BLUE);
 
-            System.out.println("No." + index + " has been selected");
-
             // Set when is not been selected.
         } else {
 
