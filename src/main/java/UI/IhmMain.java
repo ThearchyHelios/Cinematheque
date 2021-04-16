@@ -387,7 +387,7 @@ public class IhmMain extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                // Initialize frame "Add Film"
+                // Instantiate frame "Add Film"
                 JFrame frameAddFilmToTxt = new JFrame("Add films");
                 frameAddFilmToTxt.setVisible(true);
                 frameAddFilmToTxt.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -421,6 +421,7 @@ public class IhmMain extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
 
+                        // Check if the length of film name is 0, if then return error.
                         if (textFieldFilmNameAddFilmToTxt.getText().length() == 0){
                             JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
                             return;
@@ -447,18 +448,28 @@ public class IhmMain extends JFrame {
         });
 
 
+        // Add action listener to catch if the button is clicked.
         buttonSearch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Init list model in search frame.
                 listModel2.removeAllElements();
                 String str = textField1.getText();
                 List<SearchResult> searchResultArrayList = new ArrayList<>();
+
+                // Asynchronously send the request and notify callback of its response or if an error occurred talking
+                // to the server, creating the request, or processing the response.
                 Call<SearchMovie> searchMovieCall = apiInterface.get_movie(utils.API_KEY, str);
                 searchMovieCall.enqueue(new Callback<SearchMovie>() {
                     @Override
+                    // Invoked for a received HTTP response.
                     public void onResponse(Call<SearchMovie> call, Response<SearchMovie> response) {
                         SearchMovie searchMovie = response.body();
+
+                        // Determinate if we get the result, if we get results then response.getTotal_results != 0
                         if (response.body().getTotal_results() != 0) {
+
+                            // Instantiate new frame for search results.
                             JFrame frameSearch = new JFrame("Search Results");
                             frameSearch.setVisible(true);
                             frameSearch.setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -487,17 +498,13 @@ public class IhmMain extends JFrame {
                             JPanel panelSearchNorth = new JPanel();
 
                             panelSearchCenter.add(jTextPaneSearch);
-//                            panelSearchWest.add(jTextPaneSearch);
 
                             frameSearch.add(jScrollPaneSearch, BorderLayout.NORTH);
                             frameSearch.add(jTextPaneSearch, BorderLayout.CENTER);
-//                            frame_search.add(jScrollPaneTextPaneSearch, BorderLayout.EAST);
                             frameSearch.add(jLabelPostImage, BorderLayout.WEST);
                             frameSearch.add(jButtonAddToList, BorderLayout.SOUTH);
 
-
-//                            frame_search.add(panelSearchCenter, BorderLayout.CENTER);
-
+                            // Add all movies which in results into list model to show.
                             for (int j = 0; j < searchMovie.getResults().size(); j++) {
                                 List<Movie.movie_detail> listMovieDetail = searchMovie.getResults();
                                 listModel2.addElement(new ListFilmSearchModel(listMovieDetail.get(j).getTitle()));
@@ -505,9 +512,12 @@ public class IhmMain extends JFrame {
                             }
 
 
+                            // Add selection listener to catch if the movie is selected.
                             listSearch.addListSelectionListener(new ListSelectionListener() {
                                 @Override
                                 public void valueChanged(ListSelectionEvent e) {
+
+                                    // Get the value only when the left key is released.
                                     if (e.getValueIsAdjusting()) {
                                         return;
                                     }
@@ -516,17 +526,19 @@ public class IhmMain extends JFrame {
                                     jLabelPostImage.setIcon(null);
                                     System.out.println(listSearch.getSelectedIndex());
 //                                    search_result search_result_index = search_resultArrayList.get(list_search.getSelectedIndex());
-                                    SearchResult searchResultIndex = searchResultArrayList.get(0);
+
+                                    // Instantiate the movie info which selected.
+                                    SearchResult searchResultSelect = searchResultArrayList.get(0);
                                     try {
-                                        searchResultIndex = searchResultArrayList.get(listSearch.getSelectedIndex());
+                                        searchResultSelect = searchResultArrayList.get(listSearch.getSelectedIndex());
                                     } catch (Exception exception) {
                                         exception.printStackTrace();
                                     }
 
-                                    int searchResultFilmId = searchResultIndex.iddefilm;
-                                    String searchResultFilmNom = searchResultIndex.nomdefilm;
+                                    int searchResultFilmId = searchResultSelect.iddefilm;
+                                    String searchResultFilmNom = searchResultSelect.nomdefilm;
 
-
+                                    // Use the movie id which we got to get movie info.
                                     Call<Movie.movie_detail> callMovieDetail = apiInterface.get_movie_by_id(searchResultFilmId, utils.API_KEY);
 
                                     callMovieDetail.enqueue(new Callback<Movie.movie_detail>() {
@@ -576,6 +588,7 @@ public class IhmMain extends JFrame {
                                 }
                             });
 
+                            // Add action listener to catch if the button is clicked.
                             jButtonAddToList.addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
@@ -668,6 +681,8 @@ public class IhmMain extends JFrame {
 
 
                     @Override
+                    // Invoked when a network exception occurred talking to the server or when an unexpected exception
+                    // occurred creating the request or processing the response.
                     public void onFailure(Call<SearchMovie> call, Throwable throwable) {
                         throwable.getMessage();
 
@@ -683,18 +698,22 @@ public class IhmMain extends JFrame {
 //            }
 //        });
 
-        // Delete Button
+        // Add action listener to catch if the button is clicked.
         buttonDelFilm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                // Get selected item's index
                 int indexDelFilm = listLesFilm.getSelectedIndex();
                 System.out.println(indexDelFilm);
+
+                // Get delete film's name.
                 String stringDelFilmNom = new String(listFilmInList.get(indexDelFilm).getNomdefilm());
                 // Delete Last Space in String
                 System.out.println(stringDelFilmNom);
 
                 // Get Film names from TXT file, search the movie which we want to delete and then delete it
-                //TXT to ArrayList
+                // Turn TXT to ArrayList
                 File directory = new File("src/main/resources/film.csv");
                 String absoultePath = directory.getAbsolutePath();
                 List<String> listFilmInTxt = new ArrayList<String>();
@@ -722,6 +741,7 @@ public class IhmMain extends JFrame {
                 }
 
 
+                // Check if the movie film is in array list, if yes then delete.
                 for (int i = 0; i < listFilmInTxt.size(); i++) {
 //                    System.out.println(listFilmInTxt.get(i));
                     if (listFilmInTxt.get(i).equals(stringDelFilmNom)) {
@@ -731,6 +751,8 @@ public class IhmMain extends JFrame {
                             listModel.remove(indexDelFilm);
                             System.out.println("yes");
                             try {
+
+                                // Empty txt file
                                 FileWriter fw = new FileWriter(absoultePath);
                                 fw.write("");
                                 fw.flush();
@@ -738,13 +760,16 @@ public class IhmMain extends JFrame {
                             } catch (IOException ioException) {
                                 ioException.printStackTrace();
                             }
+
                             listFilmInTxt.remove(i);
                             listModeInTxt.remove(i);
                             listFilmIdInTxt.remove(i);
                             listYearInTxt.remove(i);
 
-
+                            // Rewrite the processed form into the TXT file.
                             for (int j = 0; j < listFilmInTxt.size(); j++) {
+
+                                // Except for the last line, add "\n" to wrap line.
                                 if (j < listFilmInTxt.size() - 1) {
                                     try {
                                         FileWriter fw = new FileWriter(absoultePath, true);
@@ -753,6 +778,7 @@ public class IhmMain extends JFrame {
                                     } catch (IOException ioException) {
                                         ioException.printStackTrace();
                                     }
+                                // For the last line.
                                 } else {
                                     try {
                                         FileWriter fw = new FileWriter(absoultePath, true);
