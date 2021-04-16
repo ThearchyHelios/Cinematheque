@@ -30,7 +30,6 @@ import java.util.List;
 
 /**
  * Project Cinematheque {@link https://github.com/Marshellson/Cinematheque}
- *
  */
 
 public class IhmMain extends JFrame {
@@ -46,7 +45,7 @@ public class IhmMain extends JFrame {
     private JTextPane textPaneMovieDetail;
     private JScrollPane scrollPaneTextPane;
     private JLabel labelFilmImage;
-    private JComboBox <String> comboBoxSort;
+    private JComboBox<String> comboBoxSort;
     private JButton buttonDelFilm;
     private APIInterface apiInterface;
 
@@ -164,7 +163,7 @@ public class IhmMain extends JFrame {
         comboBoxSort.addItem("Model");
         comboBoxSort.addItem("Year");
 
-        
+
         // Instantiate a action listener to check if the context of combobox is selected.
         comboBoxSort.addActionListener(new ActionListener() {
             @Override
@@ -209,7 +208,7 @@ public class IhmMain extends JFrame {
                         listFilmInList.set(j, new LesFilmsInList(listFilmInTxt.get(j), listModeInTxt.get(j), listFilmIdInTxt.get(j), listYearInTxt.get(j)));
                     }
 
-                // Check if the selected item is "Model", the order of films will be sorted by model.
+                    // Check if the selected item is "Model", the order of films will be sorted by model.
                 } else if (comboBoxSort.getSelectedItem() == "Model") {
 
                     // Compare models from list, then sort models.
@@ -223,7 +222,7 @@ public class IhmMain extends JFrame {
                     // Refresh list.
                     listLesFilm.setModel(listModel);
 
-                // Check if the selected item is "Name", the order of films will be sorted by name.
+                    // Check if the selected item is "Name", the order of films will be sorted by name.
                 } else if (comboBoxSort.getSelectedItem() == "Name") {
 
                     // Compare names from list, then sort names.
@@ -237,7 +236,7 @@ public class IhmMain extends JFrame {
                     // Refresh list.
                     listLesFilm.setModel(listModel);
 
-                // Check if the selected item is "Year", the order of films will be sorted by release date.
+                    // Check if the selected item is "Year", the order of films will be sorted by release date.
                 } else if (comboBoxSort.getSelectedItem() == "Year") {
 
                     // Compare names from list, then sort year.
@@ -422,7 +421,7 @@ public class IhmMain extends JFrame {
                     public void actionPerformed(ActionEvent e) {
 
                         // Check if the length of film name is 0, if then return error.
-                        if (textFieldFilmNameAddFilmToTxt.getText().length() == 0){
+                        if (textFieldFilmNameAddFilmToTxt.getText().length() == 0) {
                             JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
                             return;
                         }
@@ -452,6 +451,11 @@ public class IhmMain extends JFrame {
         buttonSearch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                if (textField1.getText().length() == 0 || textField1.getText().replaceAll("\s", "") == null) {
+                    JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
                 // Init list model in search frame.
                 listModel2.removeAllElements();
                 String str = textField1.getText();
@@ -467,6 +471,10 @@ public class IhmMain extends JFrame {
                         SearchMovie searchMovie = response.body();
 
                         // Determinate if we get the result, if we get results then response.getTotal_results != 0
+                        if (response.body() == null) {
+                            JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                            return;
+                        }
                         if (response.body().getTotal_results() != 0) {
 
                             // Instantiate new frame for search results.
@@ -582,7 +590,7 @@ public class IhmMain extends JFrame {
 
                                         @Override
                                         public void onFailure(Call<Movie.movie_detail> call, Throwable throwable) {
-
+                                            JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
                                         }
                                     });
                                 }
@@ -659,7 +667,7 @@ public class IhmMain extends JFrame {
                                                 frameAddFilmFromSearch.setVisible(false);
 
                                                 FileWriter fw = new FileWriter(absoultePath, true);
-                                                fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," +searchResultArrayList.get(listSearch.getSelectedIndex()).release_date);
+                                                fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," + searchResultArrayList.get(listSearch.getSelectedIndex()).release_date);
                                                 fw.close();
 
 
@@ -778,7 +786,7 @@ public class IhmMain extends JFrame {
                                     } catch (IOException ioException) {
                                         ioException.printStackTrace();
                                     }
-                                // For the last line.
+                                    // For the last line.
                                 } else {
                                     try {
                                         FileWriter fw = new FileWriter(absoultePath, true);
