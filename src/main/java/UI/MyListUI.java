@@ -16,7 +16,7 @@ public class MyListUI extends DefaultListCellRenderer {
         File Bray_png = new File("src/main/resources/Bray.png");
         File Digital_png = new File("src/main/resources/Digital.png");
 
-        // Determine whether DVD exists in Text (or B-ray or digital).
+        // Determine the model from value.
 
         String model_string_spilt[] = value.toString().split("\n", -1);
         String model = model_string_spilt[1];

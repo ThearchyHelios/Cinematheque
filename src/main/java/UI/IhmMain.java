@@ -386,6 +386,8 @@ public class IhmMain extends JFrame {
         buttonAddFilm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                // Initialize frame "Add Film"
                 JFrame frameAddFilmToTxt = new JFrame("Add films");
                 frameAddFilmToTxt.setVisible(true);
                 frameAddFilmToTxt.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -418,10 +420,13 @@ public class IhmMain extends JFrame {
                 buttonConfirmAddfilmToText.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        // Check if the movie title contains model names(DVD, B-ray, Digital)
-                        // If the movie title contains model names without this judgement then the model icon will wrong
-                        // display.
 
+                        if (textFieldFilmNameAddFilmToTxt.getText().length() == 0){
+                            JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                            return;
+                        }
+
+                        // Write Film information into txt file, and add film into list model to show on screen.
                         try {
 
                             FileWriter fw = new FileWriter(absoultePath, true);
