@@ -28,9 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Project Cinematheque {@link https://github.com/Marshellson/Cinematheque}
- */
+// Project Cinematheque {@link https://github.com/Marshellson/Cinematheque}
 
 public class IhmMain extends JFrame {
     private JPanel mainInterface;
@@ -56,6 +54,8 @@ public class IhmMain extends JFrame {
     // Define listModel2 with model ListModelSearch to stock films with Nom.
     DefaultListModel<ListFilmSearchModel> listModel2 = new DefaultListModel<>();
 
+
+    DefaultListModel<ListFilmSearchModel> listModel3 = new DefaultListModel<>();
     /**
      * Create main frame {@code IhmMain}.
      */
@@ -458,6 +458,7 @@ public class IhmMain extends JFrame {
                 }
                 // Init list model in search frame.
                 listModel2.removeAllElements();
+                listModel3.removeAllElements();
                 String str = textField1.getText();
                 List<SearchResult> searchResultArrayList = new ArrayList<>();
 
@@ -482,11 +483,13 @@ public class IhmMain extends JFrame {
                             frameSearch.setVisible(true);
                             frameSearch.setDefaultCloseOperation(HIDE_ON_CLOSE);
                             frameSearch.setSize(700, 500);
-                            JList<ListFilmSearchModel> listSearch = new JList<>();
-                            listSearch.setModel(listModel2);
+                            JList<ListFilmSearchModel> listSearchRemote = new JList<>();
+                            JList<ListFilmSearchModel> listSearchInLibrary = new JList<>();
+                            listSearchRemote.setModel(listModel2);
+                            listSearchInLibrary.setModel(listModel3);
 
 
-                            JScrollPane jScrollPaneSearch = new JScrollPane(listSearch);
+                            JScrollPane jScrollPaneSearch = new JScrollPane(listSearchRemote);
                             jScrollPaneSearch.setSize(600, 600);
 
 
@@ -512,16 +515,23 @@ public class IhmMain extends JFrame {
                             frameSearch.add(jLabelPostImage, BorderLayout.WEST);
                             frameSearch.add(jButtonAddToList, BorderLayout.SOUTH);
 
+
+
+                            List<Movie.movie_detail> listMovieDetail = searchMovie.getResults();
                             // Add all movies which in results into list model to show.
                             for (int j = 0; j < searchMovie.getResults().size(); j++) {
-                                List<Movie.movie_detail> listMovieDetail = searchMovie.getResults();
                                 listModel2.addElement(new ListFilmSearchModel(listMovieDetail.get(j).getTitle()));
                                 searchResultArrayList.add(new SearchResult(listMovieDetail.get(j).getTitle(), listMovieDetail.get(j).getId(), listMovieDetail.get(j).getRelease_date()));
+                                for(int a = 0; a<listFilmInList.toArray().length;a++){
+                                    if(listFilmInList.get(a).getNomdefilm().equals(listMovieDetail.get(j).getTitle())){
+                                        listModel2.setElementAt(new ListFilmSearchModel(listMovieDetail.get(j).getTitle() + "  | Already In Library!"), j);
+                                    }
+                                }
                             }
 
 
                             // Add selection listener to catch if the movie is selected.
-                            listSearch.addListSelectionListener(new ListSelectionListener() {
+                            listSearchRemote.addListSelectionListener(new ListSelectionListener() {
                                 @Override
                                 public void valueChanged(ListSelectionEvent e) {
 
@@ -532,13 +542,13 @@ public class IhmMain extends JFrame {
                                     jTextPaneSearch.setText(null);
                                     jLabelPostImage.setText(null);
                                     jLabelPostImage.setIcon(null);
-                                    System.out.println(listSearch.getSelectedIndex());
+                                    System.out.println(listSearchRemote.getSelectedIndex());
 //                                    search_result search_result_index = search_resultArrayList.get(list_search.getSelectedIndex());
 
                                     // Instantiate the movie info which selected.
                                     SearchResult searchResultSelect = searchResultArrayList.get(0);
                                     try {
-                                        searchResultSelect = searchResultArrayList.get(listSearch.getSelectedIndex());
+                                        searchResultSelect = searchResultArrayList.get(listSearchRemote.getSelectedIndex());
                                     } catch (Exception exception) {
                                         exception.printStackTrace();
                                     }
@@ -601,8 +611,8 @@ public class IhmMain extends JFrame {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
 
-                                    System.out.println(searchResultArrayList.get(listSearch.getSelectedIndex()).nomdefilm);
-                                    System.out.println(searchResultArrayList.get(listSearch.getSelectedIndex()).iddefilm);
+                                    System.out.println(searchResultArrayList.get(listSearchRemote.getSelectedIndex()).nomdefilm);
+                                    System.out.println(searchResultArrayList.get(listSearchRemote.getSelectedIndex()).iddefilm);
 
                                     JFrame frameAddFilmFromSearch = new JFrame("Add Film From Search");
                                     frameAddFilmFromSearch.setVisible(true);
@@ -617,10 +627,10 @@ public class IhmMain extends JFrame {
 
                                     JLabel label1AddFilmToTxtFrameSearch = new JLabel("Name: ");
                                     JTextField textFieldFilmNameAddFilmToTxtFrameSearch = new JTextField(10);
-                                    textFieldFilmNameAddFilmToTxtFrameSearch.setText(searchResultArrayList.get(listSearch.getSelectedIndex()).nomdefilm);
+                                    textFieldFilmNameAddFilmToTxtFrameSearch.setText(searchResultArrayList.get(listSearchRemote.getSelectedIndex()).nomdefilm);
                                     JLabel label2AddFilmToTxtFrameSearch = new JLabel("ID:   ");
                                     JTextField textFieldFilmIdAddFilmToTxtFrameSearch = new JTextField(10);
-                                    textFieldFilmIdAddFilmToTxtFrameSearch.setText(String.valueOf(searchResultArrayList.get(listSearch.getSelectedIndex()).iddefilm));
+                                    textFieldFilmIdAddFilmToTxtFrameSearch.setText(String.valueOf(searchResultArrayList.get(listSearchRemote.getSelectedIndex()).iddefilm));
                                     textFieldFilmNameAddFilmToTxtFrameSearch.setSize(300, -1);
 
 
@@ -663,11 +673,11 @@ public class IhmMain extends JFrame {
                                             try {
 
                                                 listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
-                                                listFilmInList.add(new LesFilmsInList(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), searchResultArrayList.get(listSearch.getSelectedIndex()).release_date));
+                                                listFilmInList.add(new LesFilmsInList(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), searchResultArrayList.get(listSearchRemote.getSelectedIndex()).release_date));
                                                 frameAddFilmFromSearch.setVisible(false);
 
                                                 FileWriter fw = new FileWriter(absoultePath, true);
-                                                fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," + searchResultArrayList.get(listSearch.getSelectedIndex()).release_date);
+                                                fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," + searchResultArrayList.get(listSearchRemote.getSelectedIndex()).release_date);
                                                 fw.close();
 
 
