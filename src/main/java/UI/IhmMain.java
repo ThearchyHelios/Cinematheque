@@ -20,6 +20,8 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
@@ -816,6 +818,45 @@ public class IhmMain extends JFrame {
 
             }
         });
+//        buttonSearchInLibrary.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                String stringSearchInLibrary = textFieldSearchInLibrary.getText();
+//                List<ListModelElement> listSearchInLibrary = new ArrayList<>();
+//                for(int i=0;i<listFilmInList.toArray().length;i++){
+//                    if(stringSearchInLibrary.toLowerCase().contains(listFilmInList.get(i).getNomdefilm().toLowerCase())){
+//                        listSearchInLibrary.add(new ListModelElement(listFilmInList.get(i).getNomdefilm(), listFilmInList.get(i).getModel()));
+//                    }
+//                }
+//                listModel.removeAllElements();
+//                for(int i=0;i<listSearchInLibrary.toArray().length;i++){
+//                    listModel.addElement(new ListModelElement(listSearchInLibrary.get(i).getNom(), listSearchInLibrary.get(i).getModel()));
+//                }
+//            }
+//        });
+//        textFieldSearchInLibrary.addKeyListener(new KeyAdapter() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {
+//                super.keyTyped(e);
+//                String stringSearchInLibrary = textFieldSearchInLibrary.getText();
+//                List<ListModelElement> listSearchInLibrary = new ArrayList<>();
+//                listModel.removeAllElements();
+//                for(int i=0;i<listFilmInList.toArray().length;i++){
+//                    if(stringSearchInLibrary.toLowerCase().contains(listFilmInList.get(i).getNomdefilm().toLowerCase())){
+//                        listSearchInLibrary.add(new ListModelElement(listFilmInList.get(i).getNomdefilm(), listFilmInList.get(i).getModel()));
+//                    }
+//                }
+//                if(textFieldSearchInLibrary.getText().equals("")){
+//                    for(int i=0; i<listFilmInList.toArray().length; i++){
+//                        listModel.addElement(new ListModelElement(listFilmInList.get(i).getNomdefilm(), listFilmInList.get(i).getModel()));
+//                    }
+//                } else {
+//                    for(int i=0;i<listSearchInLibrary.toArray().length;i++){
+//                        listModel.addElement(new ListModelElement(listSearchInLibrary.get(i).getNom(), listSearchInLibrary.get(i).getModel()));
+//                    }
+//                }
+//            }
+//        });
     }
 
 
