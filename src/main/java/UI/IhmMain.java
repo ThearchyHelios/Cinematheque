@@ -58,6 +58,7 @@ public class IhmMain extends JFrame {
 
 
     DefaultListModel<ListFilmSearchModel> listModel3 = new DefaultListModel<>();
+
     /**
      * Create main frame {@code IhmMain}.
      */
@@ -278,7 +279,7 @@ public class IhmMain extends JFrame {
                 // Initialize the value of pane.
                 textPaneMovieDetail.setText(null);
 
-                System.out.println(listLesFilm.getSelectedIndex());
+                System.out.println(listLesFilm.getSelectedIndex() + " has been selected!");
 
                 // Instantiate the value to the selected film.
                 LesFilmsInList lesFilmsInListSelected = listFilmInList.get(listLesFilm.getSelectedIndex());
@@ -518,14 +519,13 @@ public class IhmMain extends JFrame {
                             frameSearch.add(jButtonAddToList, BorderLayout.SOUTH);
 
 
-
                             List<Movie.movie_detail> listMovieDetail = searchMovie.getResults();
                             // Add all movies which in results into list model to show.
                             for (int j = 0; j < searchMovie.getResults().size(); j++) {
                                 listModel2.addElement(new ListFilmSearchModel(listMovieDetail.get(j).getTitle()));
                                 searchResultArrayList.add(new SearchResult(listMovieDetail.get(j).getTitle(), listMovieDetail.get(j).getId(), listMovieDetail.get(j).getRelease_date()));
-                                for(int a = 0; a<listFilmInList.toArray().length;a++){
-                                    if(listFilmInList.get(a).getNomdefilm().equals(listMovieDetail.get(j).getTitle())){
+                                for (int a = 0; a < listFilmInList.toArray().length; a++) {
+                                    if (listFilmInList.get(a).getNomdefilm().equals(listMovieDetail.get(j).getTitle())) {
                                         listModel2.setElementAt(new ListFilmSearchModel(listMovieDetail.get(j).getTitle() + "  | Already In Library!"), j);
                                     }
                                 }
@@ -544,7 +544,7 @@ public class IhmMain extends JFrame {
                                     jTextPaneSearch.setText(null);
                                     jLabelPostImage.setText(null);
                                     jLabelPostImage.setIcon(null);
-                                    System.out.println(listSearchRemote.getSelectedIndex());
+                                    System.out.println(listSearchRemote.getSelectedIndex() + " has been selected!");
 //                                    search_result search_result_index = search_resultArrayList.get(list_search.getSelectedIndex());
 
                                     // Instantiate the movie info which selected.
@@ -613,8 +613,8 @@ public class IhmMain extends JFrame {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
 
-                                    System.out.println(searchResultArrayList.get(listSearchRemote.getSelectedIndex()).nomdefilm);
-                                    System.out.println(searchResultArrayList.get(listSearchRemote.getSelectedIndex()).iddefilm);
+                                    System.out.println("Film: " + searchResultArrayList.get(listSearchRemote.getSelectedIndex()).nomdefilm);
+                                    System.out.println("Film ID:" + searchResultArrayList.get(listSearchRemote.getSelectedIndex()).iddefilm);
 
                                     JFrame frameAddFilmFromSearch = new JFrame("Add Film From Search");
                                     frameAddFilmFromSearch.setVisible(true);
@@ -725,12 +725,12 @@ public class IhmMain extends JFrame {
 
                 // Get selected item's index
                 int indexDelFilm = listLesFilm.getSelectedIndex();
-                System.out.println(indexDelFilm);
+                System.out.println("Delete Film Index:" + indexDelFilm);
 
                 // Get delete film's name.
                 String stringDelFilmNom = new String(listFilmInList.get(indexDelFilm).getNomdefilm());
                 // Delete Last Space in String
-                System.out.println(stringDelFilmNom);
+                System.out.println("Delete Film Name: " + stringDelFilmNom);
 
                 // Get Film names from TXT file, search the movie which we want to delete and then delete it
                 // Turn TXT to ArrayList
