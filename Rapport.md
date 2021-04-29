@@ -51,18 +51,19 @@ Contributeurs: JIANG Yilun, KANG Zhuodong, WANG Haoyu
 
 
 
+
 # <center>Sommaire</center>
 
-* [Contexte du développement](#Contexte-du-développement)
+* [Contexte du développement](#Contexte du développement)
   &nbsp;
 
-* [Analyse des exigences](#Analyse-des-exigences)
+* [Analyse des exigences](#Analyse des exigences)
   &nbsp;
 
-* [Conception des contours](#Conception-des-contours)
+* [Conception des contours](#Conception des contours)
   &nbsp;
 
-* [Conception détaillée](#Conception-détaillée)
+* [Conception détaillée](#Conception détaillée)
   &nbsp;
 
 * [Réaliser](#Réaliser)
@@ -138,8 +139,19 @@ Ce projet consiste à créer un logiciel permettant de gérer les films/séries 
 
 &nbsp;
 
+&nbsp;
 
+&nbsp;
 
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
 
 ## Analyse des exigences
 Après avoir décidé de notre thème, nous avons eu une discussion animée sur notre sujet, et nous avons finalement déterminé nos besoins pour ce programme, et les fonctions du programme ont été résumées comme nécessitant les éléments suivants au total.
@@ -164,7 +176,70 @@ Après cela, nous nous sommes rendus ensemble sur le site web https://developers
 &nbsp;
 
 Dans ce site, nous obtiendrons les détails de nos films et leurs identifiants. Les identifiants des films permettront d'obtenir facilement des informations sur les films. Mais pour utiliser ce site, nous avons besoin de la clé API, donc nous nous sommes inscrits sur ce site et le site nous a donné la clé API.
+
+
+
 ## Conception des contours
+
+<center>Interface 1 Interface utilisateur principale</center>
+Cette interface est globalement la même que celle que nous avons conçue auparavant, à l'exception de quelques modifications. En haut à gauche de l'interface principale se trouve le nom de notre programme (Cinématique) et à côté se trouvent nos deux boutons avec (ComboBox), le bouton Ajouter pour ajouter les films que nous possédons, le bouton Supprimer pour supprimer nos films et (ComboBox) que nous utilisons pour trier les films de notre cinémathèque. Nous avons pensé qu'il y avait trop peu de fonctionnalités pouvant être ajoutées au bouton droit de la souris, et nous avons donc décidé d'utiliser le bouton à sa place. En bas à gauche de cette interface principale se trouve notre bibliothèque de films, qui affichera les films que nous avons ajoutés nous-mêmes, lorsque nous pensons au nom du film ci-dessus, le côté droit de notre interface affichera l'affiche du film avec les détails du film, et en haut à droite de l'interface se trouvent le bouton de recherche et la barre de recherche, après avoir entré le nom du film dans la barre de recherche et cliqué sur le bouton de recherche, nous obtiendrons les résultats de la recherche de films. .
+
+&nbsp;
+
+
+<center>Interface 2 Interface de recherche de film par l'utilisateur</center>
+Lorsque nous cliquons sur le bouton de recherche de film, nous entrons dans cette interface - interface de recherche, dans cette interface, le haut de notre interface est les films les plus pertinents que nous obtenons par la recherche de nom de film, lorsque nous cliquons sur le nom du film, l'affiche de ce film et les informations sommaires du film seront affichées en dessous du nom du film. En bas de l'écran de recherche se trouve le bouton d'ajout, lorsque nous cliquons sur ce bouton, nous entrons dans l'écran d'ajout.
+
+
+&nbsp;
+
+
+&nbsp;
+
+<center>Interface 3 L'interface d'ajout de film par l'utilisateur</center>
+Après avoir cliqué sur le bouton Ajouter dans l'interface principale, nous accédons à cette page, dans laquelle nous pouvons saisir le nom du film et choisir le type de film, lorsque nous cliquons sur Ajouter, il sera ajouté à notre bibliothèque.
+
+&nbsp;
+
+
+&nbsp;
+
+<center>Interface 4 L'interface d'ajout de films après la recherche de films par les utilisateurs.</center>
+Après avoir cliqué sur le bouton Ajouter dans l'interface Rechercher des films, nous entrerons dans cette page, cette page affichera le nom du film et l'identifiant du film, nous pouvons également choisir le type de film à ajouter à notre bibliothèque. Si le film de la liste de recherche existe déjà dans la bibliothèque, l'utilisateur sera invité à indiquer dans le titre qu'il existe déjà dans la bibliothèque.
+
+
+
+
 ## Conception détaillée
+Après cela, nous avons discuté des cinq versions de notre sujet, lorsque nous avons fait la proposition initiale du programme pour mettre en œuvre ces cinq versions
+&nbsp;
+
+&nbsp;
+
+
+Version 1
+Dans la version 1, nous avons créé une bibliothèque locale de films dans le programme, afin de pouvoir stocker les films que nous avons ajoutés nous-mêmes. Nous allons utiliser le format《 csv》 pour stocker nos films sauvegardés.
+&nbsp;
+
+&nbsp;
+
+
+Version 2
+Nous utiliserons la clé API que nous avons obtenue, nous utiliserons la méthode du site web pour nous connecter à la bibliothèque de films sur le site web, après quoi nous obtiendrons l'identifiant du film et le stockerons dans notre propre bibliothèque de films, après quoi nous utiliserons la méthode du site web pour obtenir les détails du film par l'identifiant du film, puis nous afficherons les détails dans notre bibliothèque de films.
+&nbsp;
+
+&nbsp;
+
+
+Version 4
+Dans la version 4, nous utiliserons la même méthode que dans les versions 2 et 3, nous obtiendrons la date de sortie du film et le type de film par l'identifiant du film, puis nous l'afficherons dans notre bibliothèque de la même manière.
+&nbsp;
+
+&nbsp;
+
+
+Version 5
+Après avoir consulté nos sources, nous sommes toujours dans le flou.
+Ensuite, nous allons présenter l'interface de notre programme
 ## Réaliser
 ## Conclure
