@@ -144,7 +144,9 @@ manière.
 
 Mais après avoir lu les livres d'apprentissage, nous n'avons pas réussi à trouver une solution.
 
-Ensuite, voyons le graphe de dépendance relationnelle de notre programme
+Ensuite, voyons le graphe de dépendance relationnelle de notre programme:
+
+<img src="https://github.com/Marshellson/Cinematheque/blob/rapport_2et3/UML.png?raw=true">
 
 ## Réaliser
 
