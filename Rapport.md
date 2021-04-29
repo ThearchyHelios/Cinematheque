@@ -4,6 +4,8 @@
 
 Contributeurs: JIANG Yilun, KANG Zhuodong, WANG Haoyu
 
+<div style="page-break-after: always;"></div>
+
 ## Sommaire
 
 * [Contexte du développement](#Contexte-du-développement)
@@ -64,12 +66,11 @@ dessiner un aperçu de notre interface.
 
 
 <img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/image0.jpg?raw=true" />
-Cette image est l'interface principale que nous avons dessinée à l'époque, nous avons dessiné l'interface avec notre liste de films sur le côté gauche, les détails des films sur le côté droit, et le titre, le filtre et l'ajout de films sur le côté droit au-dessus, tandis que la fonction de recherche est utilisée sur le côté gauche au-dessus, et nous avons décidé à l'époque que le bouton gauche de la souris peut supprimer les films dont nous n'avons pas besoin.
 
-
-
-
-
+Cette image est l'interface principale que nous avons dessinée à l'époque, nous avons dessiné l'interface avec notre
+liste de films sur le côté gauche, les détails des films sur le côté droit, et le titre, le filtre et l'ajout de films
+sur le côté droit au-dessus, tandis que la fonction de recherche est utilisée sur le côté gauche au-dessus, et nous
+avons décidé à l'époque que le bouton gauche de la souris peut supprimer les films dont nous n'avons pas besoin.
 
 Après cela, nous nous sommes rendus ensemble sur le site
 web https://developers.themoviedb.org/3/getting-started/introduction. C'est ce site web que nous devons utiliser pour
@@ -80,7 +81,10 @@ section de films (Movies)de ce site.
 
 
 <img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/IMG_0417.jpg?raw=true" />
-Dans ce site, nous obtiendrons les détails de nos films et leurs identifiants. Les identifiants des films permettront d'obtenir facilement des informations sur les films. Mais pour utiliser ce site, nous avons besoin de la clé API, donc nous nous sommes inscrits sur ce site et le site nous a donné la clé API.
+
+Dans ce site, nous obtiendrons les détails de nos films et leurs identifiants. Les identifiants des films permettront
+d'obtenir facilement des informations sur les films. Mais pour utiliser ce site, nous avons besoin de la clé API, donc
+nous nous sommes inscrits sur ce site et le site nous a donné la clé API.
 
 ## Conception des contours
 
@@ -121,7 +125,7 @@ programme pour mettre en œuvre ces cinq versions.
 ### Version 1
 
 Dans la version 1, nous avons créé une bibliothèque locale de films(Library) dans le programme, afin de pouvoir stocker
-les films que nous avons ajoutés. Nous allons utiliser le format《 csv》 pour stocker nos films sauvegardés.
+les films que nous avons ajoutés. Nous allons utiliser le format《csv》 pour stocker nos films sauvegardés.
 
 ### Version 2 et Version 3
 
