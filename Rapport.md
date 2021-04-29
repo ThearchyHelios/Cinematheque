@@ -233,6 +233,8 @@ Nous utiliserons la clé API que nous avons obtenue, nous utiliserons la méthod
 
 &nbsp;
 
+&nbsp;
+
 <center>Version 4</center>
 Dans la version 4, nous utiliserons la même méthode que dans les versions 2 et 3, nous obtiendrons la date de sortie du film et le type de film par l'identifiant du film, puis nous l'afficherons dans notre bibliothèque(Library) de la même manière.
 &nbsp;
