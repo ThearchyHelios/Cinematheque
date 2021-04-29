@@ -6,16 +6,16 @@ Contributeurs: JIANG Yilun, KANG Zhuodong, WANG Haoyu
 
 ## Sommaire
 
-* [Contexte du développement](#Contexte_du_développement)
+* [Contexte du développement](#Contexte-du-développement)
 
 
-* [Analyse des exigences](#Analyse_des_exigences)
+* [Analyse des exigences](#Analyse-des-exigences)
 
 
-* [Conception des contours](#Conception_des_contours)
+* [Conception des contours](#Conception-des-contours)
 
 
-* [Conception détaillée](#Conception_détaillée)
+* [Conception détaillée](#Conception-détaillée)
 
 
 * [Réaliser](#Réaliser)
