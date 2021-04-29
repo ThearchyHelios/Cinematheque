@@ -240,6 +240,5 @@ Dans la version 4, nous utiliserons la même méthode que dans les versions 2 et
 
 Version 5
 Après avoir consulté nos sources, nous sommes toujours dans le flou.
-Ensuite, nous allons présenter l'interface de notre programme
 ## Réaliser
 ## Conclure
