@@ -768,6 +768,7 @@ public class IhmMain extends JFrame {
                         System.out.println(i);
                         System.out.println(listFilmInTxt.get(i));
                         if (indexDelFilm != -1) {
+                            listFilmInList.remove(indexDelFilm);
                             listModel.remove(indexDelFilm);
                             System.out.println("yes");
                             try {
