@@ -73,10 +73,6 @@ public class IhmMain extends JFrame {
     public static void main(String[] args) {
         mainFrame();
     }
-
-    /**
-     * TODO: add notes here
-     */
     public IhmMain() {
 
         // Create template of URL with API Key from {@link API.getAPI}
