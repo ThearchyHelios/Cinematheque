@@ -32,6 +32,8 @@ Donc nous pensons qu'il y a un besoin pour un tel programme sur le marché aujou
 
 Ce projet consiste à créer un logiciel permettant de gérer les films/séries vues par des utilisateurs. Le projet est évolutif, c'est à dire que différentes versions peuvent être proposées, allant de la plus simple à la plus compliquée, de façon à ce que tous puissent, à la fin du semestre, proposer un logiciel en état de fonctionnement.
 
+<div style="page-break-after: always;"></div>
+
 ## Analyse des exigences
 
 Après d'avoir décidé notre thème, nous avons eu une discussion animée sur notre sujet, et nous avons finalement déterminé nos besoins pour ce programme, et les fonctions du programme ont été résumées comme nécessitant les éléments suivants au total.
@@ -62,21 +64,25 @@ Dans ce site, nous obtiendrons les détails de nos films et leurs identifiants. 
 
 Cette interface est globalement la même que celle que nous avons conçue auparavant, à l'exception de quelques modifications. En haut à gauche de l'interface principale se trouve le nom de notre programme (Cinématique) et à côté se trouvent nos deux boutons avec (ComboBox), le bouton (Ajouter) pour ajouter les films que nous possédons, le bouton (Supprimer) pour supprimer nos films et (ComboBox) que nous utilisons pour trier les films de notre cinémathèque. Nous avons pensé qu'il y avait trop peu de fonctionnalités pouvant être ajoutées au bouton droit de la souris, et nous avons donc décidé d'utiliser le bouton à sa place. En bas à gauche de cette interface principale se trouve notre bibliothèque de films(Library), qui affichera les films que nous avons ajoutés , lorsque nous pensons au nom du film ci-dessus, le côté droit de notre interface affichera l'affiche du film avec les détails du film, et en haut à droite de l'interface
 se trouvent le bouton de recherche et la barre de recherche, après avoir entré le nom du film dans la barre de recherche et cliqué sur le bouton de recherche, nous obtiendrons les résultats de la recherche de films.
+
 <img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/Interface1.png?raw=true">
 
 ### Interface2: Interface de recherche de film par l'utilisateur
 
 Lorsque nous cliquons sur le bouton de recherche de film, nous entrons dans cette interface - interface de recherche.Dans cette interface, le haut de notre interface est les films les plus pertinents que nous obtenons par la recherche de nom de film, lorsque nous cliquons sur le nom du film, l'affiche de ce film et les informations sommaires du film seront affichées en dessous du nom du film. En bas de l'interface de recherche se trouve le bouton d'ajouter, lorsque nous cliquons sur ce bouton, nous entrons dans l'interface d'ajouter.
+
 <img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/Interface2.png?raw=true">
 
 ### Interface3: L'interface d'ajout de film par l'utilisateur
 
 Après avoir cliqué sur le bouton (Ajouter) dans l'interface principale, nous accédons à cette page, dans laquelle nous pouvons saisir le nom du film et choisir le type de film, lorsque nous cliquons sur le bouton(Ajouter), il sera ajouté à notre bibliothèque(Library).
+
 <img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/Interface3.png?raw=true">
 
 ### Interface4: L'interface d'ajout de films après la recherche de films par les utilisateurs
 
 Après avoir cliqué sur le bouton (Ajouter)dans l'interface Rechercher des films, nous entrerons dans cette page, cette page affichera le nom du film et l'identifiant du film, nous pouvons également choisir le type de film à ajouter à notre bibliothèque(Library). Si le film de la liste de recherche existe déjà dans la bibliothèque(Library), l'utilisateur sera invité à indiquer dans le titre qu'il existe déjà dans la bibliothèque(Library).
+
 <img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/Interface4.png?raw=true">
 
 <div style="page-break-after: always;"></div>
@@ -104,6 +110,8 @@ Mais après avoir lu les livres d'apprentissage, nous n'avons pas réussi à tro
 Ensuite, voyons le graphe de dépendance relationnelle de notre programme:
 
 <img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/UML.png?raw=true">
+
+<div style="page-break-after: always;"></div>
 
 ## Réaliser
 
