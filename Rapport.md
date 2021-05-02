@@ -173,8 +173,8 @@ Cette section permet principalement aux utilisateurs d'entrer le film qu'ils veu
 Nous voulons que les utilisateurs saisissent directement le film qu'ils veulent ajouter à la liste, nous avons éliminé
 la détection des films dupliqués afin que les utilisateurs puissent entrer le film qu'ils veulent voir plusieurs fois.
 Le film est stocké au format de document CSV, le fichier divise le film à l'aide d'un nouveau caractère de ligne `\n` et
-le symbole `,` divise l'information sur le film, y compris le nom du film, l'ID correspondant du film sur le
-site [TheMovieDB](https://developers.themoviedb.org/3), le mode de stockage du film et l'année de sortie du film.
+du symbole `,` divise l'information sur le film, y compris le nom du film, l'ID correspondant du film sur le
+site [TheMovieDB](https://developers.themoviedb.org/3), aussi le mode de stockage du film et l'année de sortie du film.
 
 ```java
 
