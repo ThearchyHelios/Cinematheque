@@ -58,11 +58,18 @@ de façon à ce que tous puissent, à la fin du semestre, proposer un logiciel e
 
 Après d'avoir décidé notre thème, nous avons eu une discussion animée sur notre sujet, et nous avons finalement
 déterminé nos besoins pour ce programme, et les fonctions du programme ont été résumées comme nécessitant les éléments
-suivants au total. 1 Gérer la bibliothèque de films Gère les informations de base de tous les films de la bibliothèque,
-y compris l'ajout, la suppression, etc, et peut organiser les films en fonction de ces informations. 2 Gérer la base de
-données Gérer les informations de base des films qui nous sont fournies par le site web, y compris les identifiants des
-films et la possibilité de sélectionner des films à ajouter à la bibliothèque de films. Ensuite, nous avons essayé de
-dessiner un aperçu de notre interface.
+suivants au total.
+
+### 1 Gérer la bibliothèque de films
+
+Gère les informations de base de tous les films de la bibliothèque, y compris l'ajout, la suppression, etc, et peut
+organiser les films en fonction de ces informations.
+
+### 2 Gérer la base de données
+
+Gérer les informations de base des films qui nous sont fournies par le site web, y compris les identifiants des films et
+la possibilité de sélectionner des films à ajouter à la bibliothèque de films. Ensuite, nous avons essayé de dessiner un
+aperçu de notre interface.
 
 
 
@@ -295,7 +302,6 @@ public void onFailure(Call<Movie.movie_detail>call,Throwable throwable){
         JOptionPane.showMessageDialog(null,"You must enter film name!","ERROR",JOptionPane.PLAIN_MESSAGE);
         }
 ```
-
 
 ## Conclure
 
