@@ -33,11 +33,7 @@ Edison en 1889, et en 1895, alors que l'image se joue lentement, les frères Lum
 génération d'appareils de projection cinématographique, une grande invention dans laquelle le film peut être vu par de
 nombreuses personnes ensemble et qu'il peut offrir à chacun une expérience à la fois inégalée et étonnante.
 
-Et avec le développement des temps, la technologie des films progresse également, l'effet des films devient de plus en
-plus réaliste, semblable à la 3D, la présentation des films devient de plus en plus grande, l'équipement pour lire les
-films devient de plus en plus grand, la façon de sauvegarder les films devient également de plus en plus grande,
-semblable au Blu-ray, DVD, etc., qui peut permettre à de plus en plus de gens de regarder des films, la variété des
-films devient de plus en plus grande, Mais à mesure que le monde devient de plus en plus cinématographique, la diversité
+Et avec le développement des temps,  la technologie cinématographique progresse, les effets des films sont plus réalistes, comme la 3D, la présentation des films et les appareils qui les lisent augmentent, et les films sont sauvegardés de plus en plus de manières, comme le Blu-ray, le DVD, etc., ce qui permet à un plus grand nombre de personnes de regarder des films, et la variété des films est plus abondante, mais comme de plus en plus de films sont réalisés dans le monde,la diversité
 dérange les gens. Nous ne pouvons pas nous souvenir des films que nous aimons, des films que nous avons regardés, des
 films que nous possédons, nous ne pouvons pas classer et organiser ces films de manière efficace, et il n'y a aucun
 programme sur le marché actuellement qui puisse à la fois intégrer sa propre bibliothèque de films et enregistrer les
@@ -55,7 +51,7 @@ de façon à ce que tous puissent, à la fin du semestre, proposer un logiciel e
 
 ## Analyse des exigences
 
-Après avoir décidé de notre thème, nous avons eu une discussion animée sur notre sujet, et nous avons finalement
+Après d'avoir décidé notre thème, nous avons eu une discussion animée sur notre sujet, et nous avons finalement
 déterminé nos besoins pour ce programme, et les fonctions du programme ont été résumées comme nécessitant les éléments
 suivants au total. 1 Gérer la bibliothèque de films Gère les informations de base de tous les films de la bibliothèque,
 y compris l'ajout, la suppression, etc, et peut organiser les films en fonction de ces informations. 2 Gérer la base de
