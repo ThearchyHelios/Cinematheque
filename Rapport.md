@@ -4,6 +4,8 @@
 
 Contributeurs: JIANG Yilun, KANG Zhuodong, WANG Haoyu
 
+Site GitHub: [Marshellson/Cinematheque](https://github.com/Marshellson/Cinematheque)
+
 <div style="page-break-after: always;"></div>
 
 ## Sommaire
@@ -62,8 +64,7 @@ Dans ce site, nous obtiendrons les détails de nos films et leurs identifiants. 
 
 ### Interface1: Interface utilisateur principale
 
-Cette interface est globalement la même que celle que nous avons conçue auparavant, à l'exception de quelques modifications. En haut à gauche de l'interface principale se trouve le nom de notre programme (Cinématique) et à côté se trouvent nos deux boutons avec (ComboBox), le bouton (Ajouter) pour ajouter les films que nous possédons, le bouton (Supprimer) pour supprimer nos films et (ComboBox) que nous utilisons pour trier les films de notre cinémathèque. Nous avons pensé qu'il y avait trop peu de fonctionnalités pouvant être ajoutées au bouton droit de la souris, et nous avons donc décidé d'utiliser le bouton à sa place. En bas à gauche de cette interface principale se trouve notre bibliothèque de films(Library), qui affichera les films que nous avons ajoutés , lorsque nous pensons au nom du film ci-dessus, le côté droit de notre interface affichera l'affiche du film avec les détails du film, et en haut à droite de l'interface
-se trouvent le bouton de recherche et la barre de recherche, après avoir entré le nom du film dans la barre de recherche et cliqué sur le bouton de recherche, nous obtiendrons les résultats de la recherche de films.
+Cette interface est globalement la même que celle que nous avons conçue auparavant, à l'exception de quelques modifications. En haut à gauche de l'interface principale se trouve le nom de notre programme (Cinématique) et à côté se trouvent nos deux boutons avec (ComboBox), le bouton (Ajouter) pour ajouter les films que nous possédons, le bouton (Supprimer) pour supprimer nos films et (ComboBox) que nous utilisons pour trier les films de notre cinémathèque. Nous avons pensé qu'il y avait trop peu de fonctionnalités pouvant être ajoutées au bouton droit de la souris, et nous avons donc décidé d'utiliser le bouton à sa place. En bas à gauche de cette interface principale se trouve notre bibliothèque de films(Library), qui affichera les films que nous avons ajoutés , lorsque nous pensons au nom du film ci-dessus, le côté droit de notre interface affichera l'affiche du film avec les détails du film, et en haut à droite de l'interface se trouvent le bouton de recherche et la barre de recherche, après avoir entré le nom du film dans la barre de recherche et cliqué sur le bouton de recherche, nous obtiendrons les résultats de la recherche de films.
 
 <img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/Interface1.png?raw=true">
 
@@ -128,24 +129,24 @@ Nous voulons que les utilisateurs saisissent directement le film qu'ils veulent 
 // Check if the length of film name is 0, if then return error.
 
     if(textFieldFilmNameAddFilmToTxt.getText().length()==0){
-            JOptionPane.showMessageDialog(null,"You must enter film name!","ERROR",JOptionPane.PLAIN_MESSAGE);
-            return;
-            }
+        JOptionPane.showMessageDialog(null,"You must enter film name!","ERROR",JOptionPane.PLAIN_MESSAGE);
+        return;
+    }
 
-            // Write Film information into txt file, and add film into list model to show on screen.
-            try{
+        // Write Film information into txt file, and add film into list model to show on screen.
+    try{
 
-            FileWriter fw=new FileWriter(absoultePath,true);
-            fw.write("\n"+textFieldFilmNameAddFilmToTxt.getText()+","+comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString()+","+0+","+0);
-            fw.close();
+        FileWriter fw=new FileWriter(absoultePath,true);
+        fw.write("\n"+textFieldFilmNameAddFilmToTxt.getText()+","+comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString()+","+0+","+0);
+        fw.close();
+        
+        listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxt.getText(),comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString()));
+        listFilmInList.add(new LesFilmsInList(textFieldFilmNameAddFilmToTxt.getText(),comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString(),0,"0"));
+        frameAddFilmToTxt.setVisible(false);
 
-            listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxt.getText(),comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString()));
-            listFilmInList.add(new LesFilmsInList(textFieldFilmNameAddFilmToTxt.getText(),comboBoxFilmModeAddFilmToTxt.getSelectedItem().toString(),0,"0"));
-            frameAddFilmToTxt.setVisible(false);
-
-            }catch(IOException ioException){
-            ioException.printStackTrace();
-            }
+    }catch(IOException ioException){
+        ioException.printStackTrace();
+    }
 ```
 
 ### Code principale pour les versions 2, 3 et 4
@@ -174,15 +175,16 @@ Nous recherchons le film en utilisant le nom du film entré par l'utilisateur, a
 
 ```java
 Call<SearchMovie> searchMovieCall=apiInterface.get_movie(utils.API_KEY,str);
-        searchMovieCall.enqueue(new Callback<SearchMovie>(){
+searchMovieCall.enqueue(new Callback<SearchMovie>(){
 @Override
 // Invoked for a received HTTP response.
 public void onResponse(Call<SearchMovie> call,Response<SearchMovie> response){
-        SearchMovie searchMovie=response.body();
+    SearchMovie searchMovie=response.body();
+}
 
 public void onFailure(Call<SearchMovie> call,Throwable throwable){
-        throwable.getMessage();
-        }
+    throwable.getMessage();
+}
 ```
 
 Par exemple, nous rechercherons des informations sur le film Iron Man, et donc le query_string ici est "Iron man", nous envoyons la demande avec le lien suivant: `https://api.themoviedb.org/3/search/movie?api_key=89e5521b3e8381cf6adc8f4c8432e07d&language=en-US&query=Iron%20man&page=1&include_adult=false`
@@ -204,21 +206,21 @@ listSearchRemote.addListSelectionListener(new ListSelectionListener(){
 @Override
 public void valueChanged(ListSelectionEvent e){
 
-        // Get the value only when the left key is released.
-        if(e.getValueIsAdjusting()){
-        return;
-        }
+    // Get the value only when the left key is released.
+    if(e.getValueIsAdjusting()){
+        return
+    };
 
-        // Instantiate the movie info which selected.
-        SearchResult searchResultSelect=searchResultArrayList.get(0);
-        try{
+    // Instantiate the movie info which selected.
+    SearchResult searchResultSelect=searchResultArrayList.get(0);
+    try{
         searchResultSelect=searchResultArrayList.get(listSearchRemote.getSelectedIndex());
-        }catch(Exception exception){
+    }catch(Exception exception){
         exception.printStackTrace();
-        }
+    }
 
-        int searchResultFilmId=searchResultSelect.iddefilm;
-        String searchResultFilmNom=searchResultSelect.nomdefilm;
+    int searchResultFilmId=searchResultSelect.iddefilm;
+    String searchResultFilmNom=searchResultSelect.nomdefilm;
 
         // Use the movie id which we got to get movie info.
         Call<Movie.movie_detail>callMovieDetail=apiInterface.get_movie_by_id(searchResultFilmId,utils.API_KEY);
