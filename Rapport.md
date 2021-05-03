@@ -241,5 +241,21 @@ public void onFailure(Call<Movie.movie_detail>call,Throwable throwable){
 
 <div style="page-break-after: always;"></div>
 
-## Conclure
+## Conclusion
+
+### Charge de travail et délai d'achèvement
+
+Nous avons terminé la version 1 du 7 février au 11 février, les versions 2, 3 et 4 du 13 février au 7 mars, puis nous avons ajouté des commentaires de code et modifié le bug de la mi - mars au 20 avril.
+
+Diagramme de Gantt prévu:
+
+<img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/Diagramme%20de%20Gantt%202.png?raw=true">
+
+Diagramme de Gante effectif:
+
+<img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/Diagramme%20de%20Gantt%201.png?raw=true">
+
+Dans l'ensemble, nous avons terminé les tâches plus tôt que prévu, principalement en optimisant les codes et en recherchant les bugs.
+
+### Organisation du projet
 
