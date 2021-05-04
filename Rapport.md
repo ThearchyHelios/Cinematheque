@@ -54,8 +54,6 @@ Cette image est l'interface principale que nous avons dessinée à l'époque, no
 
 Après cela, nous nous sommes rendus ensemble sur le site [TheMovieDB](https://developers.themoviedb.org/3). C'est ce site web que nous devons utiliser pour notre thème, nous avons vérifié l'API de ce site web, et après avoir regardé les instructions du site web, nous avons eu une Après avoir regardé les instructions, nous avons discuté et finalement décidé que nous devions utiliser la grande section de films (Movies)de ce site.
 
-<img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/IMG_0417.jpg?raw=true" />
-
 Dans ce site, nous obtiendrons les détails de nos films et leurs identifiants. Les identifiants des films permettront d'obtenir facilement des informations sur les films. Mais pour utiliser ce site, nous avons besoin de la clé API, donc nous nous sommes inscrits sur ce site et le site nous a donné la clé API.
 
 <div style="page-break-after: always;"></div>
