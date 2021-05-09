@@ -20,7 +20,7 @@ Site GitHub: [Marshellson/Cinematheque](https://github.com/Marshellson/Cinemathe
 
 - [Réaliser](#réaliser)
 
-- [Conclursion](#conclusion)
+- [Conclusion](#conclusion)
 
 <div style="page-break-after: always;"></div>
 
