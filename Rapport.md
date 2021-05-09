@@ -20,7 +20,7 @@ Site GitHub: [Marshellson/Cinematheque](https://github.com/Marshellson/Cinemathe
 
 - [Réaliser](#réaliser)
 
-- [Conclure](#conclure)
+- [Conclure](#conclusion)
 
 <div style="page-break-after: always;"></div>
 
@@ -241,19 +241,26 @@ public void onFailure(Call<Movie.movie_detail>call,Throwable throwable){
 
 ## Conclusion
 
-### Charge de travail et délai d'achèvement
+### Processus du projet
 
-Nous avons terminé la version 1 du 7 février au 11 février, les versions 2, 3 et 4 du 13 février au 7 mars, puis nous avons ajouté des commentaires de code et modifié le bug de la mi - mars au 20 avril.
-
-Diagramme de Gantt prévu:
+En effet, pour mener à bien ce projet, nous avons fait le diagramme de Gantt au début et attribué la tâche de chacun.
 
 <img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/Diagramme%20de%20Gantt%202.png?raw=true">
 
-Diagramme de Gante effectif:
+Jiang est responsable de la programmation générale, Wang est le conseilleur qui donne des suggestions et des modifications, et Kang fait de la relecture finale et de la création du rapport. 
+
+Et voici la Diagramme de Gante effectif:
 
 <img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/Diagramme%20de%20Gantt%201.png?raw=true">
 
-Dans l'ensemble, nous avons terminé les tâches plus tôt que prévu, principalement en optimisant les codes et en recherchant les bugs.
+Après une période de travail, nous avons établi un premier design : 
 
-### Organisation du projet
+<img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/image0.jpg?raw=true">
 
+Ensuite, nous avons fait un total de cinq versions, de la version 1 à la version 5, au fur et à mesure que nous recherchions des informations et étudiions en ligne. La différence entre eux et l'aperçu est visible dans la figure suivante :
+
+<img src="https://github.com/Marshellson/Cinematheque/blob/main/rapport_image/Interface1.png?raw=true">
+
+Vous pouvez voir les changements apportés à l'interface ainsi qu'à l'IU, comme l'emplacement des affiches de films, la différence dans la façon dont les informations sur les films sont affichées et l'emplacement des informations sur le type de stockage des films.
+
+Après avoir discuté les uns avec les autres, nous avons eu le sentiment que l'environnement de travail cordial et la communication de groupe efficace nous ont permis non seulement de ne pas nous gêner les uns les autres, mais aussi de compenser les faiblesses et les lacunes de chacun afin que notre projet puisse se dérouler plus facilement et atteindre cette vitesse. Et travailler avec des camarades qui sont plus avancés en programmation peut également être très bénéfique et améliorer nos compétences globales en programmation. Ce projet a également permis d'accroître notre expérience dans la création d'interfaces logicielles, ce qui nous permettra de nous orienter plus rapidement à l'avenir.
