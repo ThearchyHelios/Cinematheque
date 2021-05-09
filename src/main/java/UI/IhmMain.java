@@ -95,6 +95,7 @@ public class IhmMain extends JFrame {
 
         // Set TextPane as a generic styled document. (To show movie details in style)
         StyledDocument styledDocumentTextPane = textPaneMovieDetail.getStyledDocument();
+        textPaneMovieDetail.setEditable(false);
 
         // Read films details from file.
         File directory = new File("src/main/resources/film.csv");
@@ -495,6 +496,7 @@ public class IhmMain extends JFrame {
                             JTextPane jTextPaneSearch = new JTextPane();
                             jTextPaneSearch.setSize(400, 300);
                             StyledDocument styledDocumentTextpaneSearch = jTextPaneSearch.getStyledDocument();
+                            jTextPaneSearch.setEditable(false);
                             JScrollPane jScrollPaneTextPaneSearch = new JScrollPane(jTextPaneSearch);
 
                             JButton jButtonAddToList = new JButton();
