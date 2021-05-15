@@ -18,7 +18,7 @@ This project consists in creating a software allowing to manage the films / seri
 
 - [Réaliser](#réaliser)
 
-- [Conclution](#conclution)
+- [Conclusion](#conclusion)
 
 <div style="page-break-after: always;"></div>
 
