@@ -639,7 +639,7 @@ public class IhmMain extends JFrame {
                                     jPanel2.add(label2AddFilmToTxtFrameSearch);
                                     jPanel2.add(textFieldFilmIdAddFilmToTxtFrameSearch);
 
-                                    textFieldFilmNameAddFilmToTxtFrameSearch.setEditable(false);
+                                    textFieldFilmNameAddFilmToTxtFrameSearch.setEditable(true);
                                     textFieldFilmIdAddFilmToTxtFrameSearch.setEditable(false);
 
                                     JLabel label3AddFilmToTxtFrameSearch = new JLabel("Type: ");
