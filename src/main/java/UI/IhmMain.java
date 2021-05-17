@@ -4,6 +4,8 @@ import API.API;
 import API.APIInterface;
 import API.utils;
 import Module.Movie;
+import Module.Actor;
+import Search.SearchActor;
 import Search.SearchMovie;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,8 +22,6 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
@@ -47,6 +47,7 @@ public class IhmMain extends JFrame {
     private JLabel labelFilmImage;
     private JComboBox<String> comboBoxSort;
     private JButton buttonDelFilm;
+    private JComboBox comboBoxSelectSearchType;
     private APIInterface apiInterface;
 
 
@@ -54,10 +55,12 @@ public class IhmMain extends JFrame {
     DefaultListModel<ListModelElement> listModel = new DefaultListModel<>();
 
     // Define listModel2 with model ListModelSearch to stock films with Nom.
-    DefaultListModel<ListFilmSearchModel> listModel2 = new DefaultListModel<>();
+    DefaultListModel<ListSearchModel> listModel2 = new DefaultListModel<>();
 
+    DefaultListModel<ListSearchModel> listModel3 = new DefaultListModel<>();
 
-    DefaultListModel<ListFilmSearchModel> listModel3 = new DefaultListModel<>();
+    DefaultListModel<ListSearchModel> listModel4 = new DefaultListModel<>();
+
 
     /**
      * Create main frame {@code IhmMain}.
@@ -73,6 +76,7 @@ public class IhmMain extends JFrame {
     public static void main(String[] args) {
         mainFrame();
     }
+
     public IhmMain() {
 
         // Create template of URL with API Key from {@link API.getAPI}
@@ -162,6 +166,10 @@ public class IhmMain extends JFrame {
         comboBoxSort.addItem("Name");
         comboBoxSort.addItem("Model");
         comboBoxSort.addItem("Year");
+
+        // Add 2 search model to combobox.
+        comboBoxSelectSearchType.addItem("Film");
+        comboBoxSelectSearchType.addItem("Actor");
 
 
         // Instantiate a action listener to check if the context of combobox is selected.
@@ -451,261 +459,633 @@ public class IhmMain extends JFrame {
         buttonSearch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (comboBoxSelectSearchType.getSelectedItem() == "Film") {
+                    if (textField1.getText().length() == 0 || textField1.getText().replaceAll("\s", "") == null) {
+                        JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                        return;
+                    }
+                    // Init list model in search frame.
+                    listModel2.removeAllElements();
+                    String str = textField1.getText();
+                    List<SearchResultFilm> searchResultFilmArrayList = new ArrayList<>();
 
-                if (textField1.getText().length() == 0 || textField1.getText().replaceAll("\s", "") == null) {
-                    JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                    return;
-                }
-                // Init list model in search frame.
-                listModel2.removeAllElements();
-                listModel3.removeAllElements();
-                String str = textField1.getText();
-                List<SearchResult> searchResultArrayList = new ArrayList<>();
+                    // Asynchronously send the request and notify callback of its response or if an error occurred talking
+                    // to the server, creating the request, or processing the response.
+                    Call<SearchMovie> searchMovieCall = apiInterface.get_movie(utils.API_KEY, str);
+                    searchMovieCall.enqueue(new Callback<SearchMovie>() {
+                        @Override
+                        // Invoked for a received HTTP response.
+                        public void onResponse(Call<SearchMovie> call, Response<SearchMovie> response) {
+                            SearchMovie searchMovie = response.body();
 
-                // Asynchronously send the request and notify callback of its response or if an error occurred talking
-                // to the server, creating the request, or processing the response.
-                Call<SearchMovie> searchMovieCall = apiInterface.get_movie(utils.API_KEY, str);
-                searchMovieCall.enqueue(new Callback<SearchMovie>() {
-                    @Override
-                    // Invoked for a received HTTP response.
-                    public void onResponse(Call<SearchMovie> call, Response<SearchMovie> response) {
-                        SearchMovie searchMovie = response.body();
+                            // Determinate if we get the result, if we get results then response.getTotal_results != 0
+                            if (response.body() == null) {
+                                JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                                return;
+                            }
+                            if (response.body().getTotal_results() != 0) {
 
-                        // Determinate if we get the result, if we get results then response.getTotal_results != 0
-                        if (response.body() == null) {
-                            JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                            return;
-                        }
-                        if (response.body().getTotal_results() != 0) {
-
-                            // Instantiate new frame for search results.
-                            JFrame frameSearch = new JFrame("Search Results");
-                            frameSearch.setVisible(true);
-                            frameSearch.setDefaultCloseOperation(HIDE_ON_CLOSE);
-                            frameSearch.setSize(700, 500);
-                            JList<ListFilmSearchModel> listSearchRemote = new JList<>();
-                            JList<ListFilmSearchModel> listSearchInLibrary = new JList<>();
-                            listSearchRemote.setModel(listModel2);
-                            listSearchInLibrary.setModel(listModel3);
+                                // Instantiate new frame for search results.
+                                JFrame frameSearch = new JFrame("Search Results");
+                                frameSearch.setVisible(true);
+                                frameSearch.setDefaultCloseOperation(HIDE_ON_CLOSE);
+                                frameSearch.setSize(700, 500);
+                                JList<ListSearchModel> listSearchRemote = new JList<>();
+                                listSearchRemote.setModel(listModel2);
 
 
-                            JScrollPane jScrollPaneSearch = new JScrollPane(listSearchRemote);
-                            jScrollPaneSearch.setSize(600, 600);
+                                JScrollPane jScrollPaneSearch = new JScrollPane(listSearchRemote);
+                                jScrollPaneSearch.setSize(600, 600);
 
 
-                            JTextPane jTextPaneSearch = new JTextPane();
-                            jTextPaneSearch.setSize(400, 300);
-                            StyledDocument styledDocumentTextpaneSearch = jTextPaneSearch.getStyledDocument();
-                            jTextPaneSearch.setEditable(false);
-                            JScrollPane jScrollPaneTextPaneSearch = new JScrollPane(jTextPaneSearch);
+                                JTextPane jTextPaneSearch = new JTextPane();
+                                jTextPaneSearch.setSize(400, 300);
+                                StyledDocument styledDocumentTextpaneSearch = jTextPaneSearch.getStyledDocument();
+                                jTextPaneSearch.setEditable(false);
+                                JScrollPane jScrollPaneTextPaneSearch = new JScrollPane(jTextPaneSearch);
 
-                            JButton jButtonAddToList = new JButton();
-                            jButtonAddToList.setText("Add To Library");
-                            jButtonAddToList.setFont(new Font("Monaco", Font.BOLD, 20));
+                                JButton jButtonAddToList = new JButton();
+                                jButtonAddToList.setText("Add To Library");
+                                jButtonAddToList.setFont(new Font("Monaco", Font.BOLD, 20));
 
-                            JLabel jLabelPostImage = new JLabel();
-
-
-                            JPanel panelSearchCenter = new JPanel();
-                            JPanel panelSearchNorth = new JPanel();
-
-                            panelSearchCenter.add(jTextPaneSearch);
-
-                            frameSearch.add(jScrollPaneSearch, BorderLayout.NORTH);
-                            frameSearch.add(jTextPaneSearch, BorderLayout.CENTER);
-                            frameSearch.add(jLabelPostImage, BorderLayout.WEST);
-                            frameSearch.add(jButtonAddToList, BorderLayout.SOUTH);
+                                JLabel jLabelPostImage = new JLabel();
 
 
-                            List<Movie.movie_detail> listMovieDetail = searchMovie.getResults();
-                            // Add all movies which in results into list model to show.
-                            for (int j = 0; j < searchMovie.getResults().size(); j++) {
-                                listModel2.addElement(new ListFilmSearchModel(listMovieDetail.get(j).getTitle()));
-                                searchResultArrayList.add(new SearchResult(listMovieDetail.get(j).getTitle(), listMovieDetail.get(j).getId(), listMovieDetail.get(j).getRelease_date()));
-                                for (int a = 0; a < listFilmInList.toArray().length; a++) {
-                                    if (listFilmInList.get(a).getNomdefilm().equals(listMovieDetail.get(j).getTitle())) {
-                                        listModel2.setElementAt(new ListFilmSearchModel(listMovieDetail.get(j).getTitle() + "  | Already In Library!"), j);
+                                JPanel panelSearchCenter = new JPanel();
+                                JPanel panelSearchNorth = new JPanel();
+
+                                panelSearchCenter.add(jTextPaneSearch);
+
+                                frameSearch.add(jScrollPaneSearch, BorderLayout.NORTH);
+                                frameSearch.add(jTextPaneSearch, BorderLayout.CENTER);
+                                frameSearch.add(jLabelPostImage, BorderLayout.WEST);
+                                frameSearch.add(jButtonAddToList, BorderLayout.SOUTH);
+
+
+                                List<Movie.movie_detail> listMovieDetail = searchMovie.getResults();
+                                // Add all movies which in results into list model to show.
+                                for (int j = 0; j < searchMovie.getResults().size(); j++) {
+                                    listModel2.addElement(new ListSearchModel(listMovieDetail.get(j).getTitle()));
+                                    searchResultFilmArrayList.add(new SearchResultFilm(listMovieDetail.get(j).getTitle(), listMovieDetail.get(j).getId(), listMovieDetail.get(j).getRelease_date()));
+                                    for (int a = 0; a < listFilmInList.toArray().length; a++) {
+                                        if (listFilmInList.get(a).getNomdefilm().equals(listMovieDetail.get(j).getTitle())) {
+                                            listModel2.setElementAt(new ListSearchModel(listMovieDetail.get(j).getTitle() + "  | Already In Library!"), j);
+                                        }
                                     }
                                 }
-                            }
 
 
-                            // Add selection listener to catch if the movie is selected.
-                            listSearchRemote.addListSelectionListener(new ListSelectionListener() {
-                                @Override
-                                public void valueChanged(ListSelectionEvent e) {
+                                // Add selection listener to catch if the movie is selected.
+                                listSearchRemote.addListSelectionListener(new ListSelectionListener() {
+                                    @Override
+                                    public void valueChanged(ListSelectionEvent e) {
 
-                                    // Get the value only when the left key is released.
-                                    if (e.getValueIsAdjusting()) {
-                                        return;
-                                    }
-                                    jTextPaneSearch.setText(null);
-                                    jLabelPostImage.setText(null);
-                                    jLabelPostImage.setIcon(null);
-                                    System.out.println(listSearchRemote.getSelectedIndex() + " has been selected!");
+                                        // Get the value only when the left key is released.
+                                        if (e.getValueIsAdjusting()) {
+                                            return;
+                                        }
+                                        jTextPaneSearch.setText(null);
+                                        jLabelPostImage.setText(null);
+                                        jLabelPostImage.setIcon(null);
+                                        System.out.println(listSearchRemote.getSelectedIndex() + " has been selected!");
 //                                    search_result search_result_index = search_resultArrayList.get(list_search.getSelectedIndex());
 
-                                    // Instantiate the movie info which selected.
-                                    SearchResult searchResultSelect = searchResultArrayList.get(0);
-                                    try {
-                                        searchResultSelect = searchResultArrayList.get(listSearchRemote.getSelectedIndex());
-                                    } catch (Exception exception) {
-                                        exception.printStackTrace();
-                                    }
+                                        // Instantiate the movie info which selected.
+                                        SearchResultFilm searchResultFilmSelect = searchResultFilmArrayList.get(0);
+                                        try {
+                                            searchResultFilmSelect = searchResultFilmArrayList.get(listSearchRemote.getSelectedIndex());
+                                        } catch (Exception exception) {
+                                            exception.printStackTrace();
+                                        }
 
-                                    int searchResultFilmId = searchResultSelect.iddefilm;
-                                    String searchResultFilmNom = searchResultSelect.nomdefilm;
+                                        int searchResultFilmId = searchResultFilmSelect.iddefilm;
+                                        String searchResultFilmNom = searchResultFilmSelect.nomdefilm;
 
-                                    // Use the movie id which we got to get movie info.
-                                    Call<Movie.movie_detail> callMovieDetail = apiInterface.get_movie_by_id(searchResultFilmId, utils.API_KEY);
+                                        // Use the movie id which we got to get movie info.
+                                        Call<Movie.movie_detail> callMovieDetail = apiInterface.get_movie_by_id(searchResultFilmId, utils.API_KEY);
 
-                                    callMovieDetail.enqueue(new Callback<Movie.movie_detail>() {
-                                        @Override
-                                        public void onResponse(Call<Movie.movie_detail> call, Response<Movie.movie_detail> response) {
-                                            Movie.movie_detail movieDetail = response.body();
+                                        callMovieDetail.enqueue(new Callback<Movie.movie_detail>() {
+                                            @Override
+                                            public void onResponse(Call<Movie.movie_detail> call, Response<Movie.movie_detail> response) {
+                                                Movie.movie_detail movieDetail = response.body();
 
-                                            SimpleAttributeSet attributeSetTitle = new SimpleAttributeSet();
-                                            StyleConstants.setBold(attributeSetTitle, true);
-                                            StyleConstants.setFontSize(attributeSetTitle, 30);
+                                                SimpleAttributeSet attributeSetTitle = new SimpleAttributeSet();
+                                                StyleConstants.setBold(attributeSetTitle, true);
+                                                StyleConstants.setFontSize(attributeSetTitle, 30);
 
-                                            BufferedImage bufferedImageIcon = null;
-                                            try {
-                                                bufferedImageIcon = ImageIO.read(new URL("https://image.tmdb.org/t/p/w200" + movieDetail.getPoster_path()));
-                                                ImageIcon imageIcon = new ImageIcon(bufferedImageIcon);
-                                                jLabelPostImage.setIcon(imageIcon);
+                                                BufferedImage bufferedImageIcon = null;
+                                                try {
+                                                    bufferedImageIcon = ImageIO.read(new URL("https://image.tmdb.org/t/p/w200" + movieDetail.getPoster_path()));
+                                                    ImageIcon imageIcon = new ImageIcon(bufferedImageIcon);
+                                                    jLabelPostImage.setIcon(imageIcon);
 
-                                            } catch (IOException ioException) {
+                                                } catch (IOException ioException) {
 //                                                ioException.printStackTrace();
-                                                jLabelPostImage.setText("This movie has no post image");
-                                            }
+                                                    jLabelPostImage.setText("This movie has no post image");
+                                                }
 
 
 //                                            Edit Search Text Pane
 
 
-                                            try {
-                                                styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), movieDetail.getTitle(), attributeSetTitle);
-                                                styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\nReleased date: " + movieDetail.getRelease_date() + "\nGenres: ", null);
-                                                for (int k = 0; k < movieDetail.getGenres().size(); k++) {
-                                                    styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), movieDetail.getGenres().get(k).getName() + "  ", null);
+                                                try {
+                                                    styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), movieDetail.getTitle(), attributeSetTitle);
+                                                    styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\nReleased date: " + movieDetail.getRelease_date() + "\nGenres: ", null);
+                                                    for (int k = 0; k < movieDetail.getGenres().size(); k++) {
+                                                        styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), movieDetail.getGenres().get(k).getName() + "  ", null);
+                                                    }
+                                                    styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\n\nAbstract:  " + movieDetail.getOverview(), null);
+                                                    styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\n\nRun time: " + movieDetail.getRuntime() + "min", null);
+                                                    styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\nMark: " + movieDetail.getVote_average() + "/10", null);
+                                                } catch (BadLocationException badLocationException) {
+                                                    badLocationException.printStackTrace();
                                                 }
-                                                styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\n\nAbstract:  " + movieDetail.getOverview(), null);
-                                                styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\n\nRun time: " + movieDetail.getRuntime() + "min", null);
-                                                styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\nMark: " + movieDetail.getVote_average() + "/10", null);
-                                            } catch (BadLocationException badLocationException) {
-                                                badLocationException.printStackTrace();
                                             }
-                                        }
 
 
-                                        @Override
-                                        public void onFailure(Call<Movie.movie_detail> call, Throwable throwable) {
-                                            JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
-                                        }
-                                    });
-                                }
-                            });
+                                            @Override
+                                            public void onFailure(Call<Movie.movie_detail> call, Throwable throwable) {
+                                                JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                        });
+                                    }
+                                });
 
-                            // Add action listener to catch if the button is clicked.
-                            jButtonAddToList.addActionListener(new ActionListener() {
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
+                                // Add action listener to catch if the button is clicked.
+                                jButtonAddToList.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
 
-                                    System.out.println("Film: " + searchResultArrayList.get(listSearchRemote.getSelectedIndex()).nomdefilm);
-                                    System.out.println("Film ID:" + searchResultArrayList.get(listSearchRemote.getSelectedIndex()).iddefilm);
+                                        System.out.println("Film: " + searchResultFilmArrayList.get(listSearchRemote.getSelectedIndex()).nomdefilm);
+                                        System.out.println("Film ID:" + searchResultFilmArrayList.get(listSearchRemote.getSelectedIndex()).iddefilm);
 
-                                    JFrame frameAddFilmFromSearch = new JFrame("Add Film From Search");
-                                    frameAddFilmFromSearch.setVisible(true);
-                                    frameAddFilmFromSearch.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                                        JFrame frameAddFilmFromSearch = new JFrame("Add Film From Search");
+                                        frameAddFilmFromSearch.setVisible(true);
+                                        frameAddFilmFromSearch.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
-                                    JPanel jPanel1 = new JPanel();
-                                    JPanel jPanel3 = new JPanel();
-                                    JPanel jPanel2 = new JPanel();
-
-
-                                    frameAddFilmFromSearch.setSize(500, 200);
-
-                                    JLabel label1AddFilmToTxtFrameSearch = new JLabel("Name: ");
-                                    JTextField textFieldFilmNameAddFilmToTxtFrameSearch = new JTextField(10);
-                                    textFieldFilmNameAddFilmToTxtFrameSearch.setText(searchResultArrayList.get(listSearchRemote.getSelectedIndex()).nomdefilm);
-                                    JLabel label2AddFilmToTxtFrameSearch = new JLabel("ID:   ");
-                                    JTextField textFieldFilmIdAddFilmToTxtFrameSearch = new JTextField(10);
-                                    textFieldFilmIdAddFilmToTxtFrameSearch.setText(String.valueOf(searchResultArrayList.get(listSearchRemote.getSelectedIndex()).iddefilm));
-                                    textFieldFilmNameAddFilmToTxtFrameSearch.setSize(300, -1);
+                                        JPanel jPanel1 = new JPanel();
+                                        JPanel jPanel3 = new JPanel();
+                                        JPanel jPanel2 = new JPanel();
 
 
-                                    jPanel1.add(label1AddFilmToTxtFrameSearch);
-                                    jPanel1.add(textFieldFilmNameAddFilmToTxtFrameSearch);
-                                    jPanel2.add(label2AddFilmToTxtFrameSearch);
-                                    jPanel2.add(textFieldFilmIdAddFilmToTxtFrameSearch);
+                                        frameAddFilmFromSearch.setSize(500, 200);
 
-                                    textFieldFilmNameAddFilmToTxtFrameSearch.setEditable(true);
-                                    textFieldFilmIdAddFilmToTxtFrameSearch.setEditable(false);
-
-                                    JLabel label3AddFilmToTxtFrameSearch = new JLabel("Type: ");
-                                    JComboBox<String> comboBoxFilmModeAddFilmToTxtFrameSearch = new JComboBox<String>();
-                                    JButton buttonConfirmAddfilmToTextFrameSearch = new JButton("Confirm");
-                                    comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("DVD");
-                                    comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("B-ray");
-                                    comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("Digital");
-
-                                    jPanel3.add(label3AddFilmToTxtFrameSearch);
-                                    jPanel3.add(comboBoxFilmModeAddFilmToTxtFrameSearch);
-                                    jPanel3.add(buttonConfirmAddfilmToTextFrameSearch);
+                                        JLabel label1AddFilmToTxtFrameSearch = new JLabel("Name: ");
+                                        JTextField textFieldFilmNameAddFilmToTxtFrameSearch = new JTextField(10);
+                                        textFieldFilmNameAddFilmToTxtFrameSearch.setText(searchResultFilmArrayList.get(listSearchRemote.getSelectedIndex()).nomdefilm);
+                                        JLabel label2AddFilmToTxtFrameSearch = new JLabel("ID:   ");
+                                        JTextField textFieldFilmIdAddFilmToTxtFrameSearch = new JTextField(10);
+                                        textFieldFilmIdAddFilmToTxtFrameSearch.setText(String.valueOf(searchResultFilmArrayList.get(listSearchRemote.getSelectedIndex()).iddefilm));
+                                        textFieldFilmNameAddFilmToTxtFrameSearch.setSize(300, -1);
 
 
-                                    frameAddFilmFromSearch.add(jPanel1, BorderLayout.NORTH);
-                                    frameAddFilmFromSearch.add(jPanel2, BorderLayout.CENTER);
-                                    frameAddFilmFromSearch.add(jPanel3, BorderLayout.SOUTH);
+                                        jPanel1.add(label1AddFilmToTxtFrameSearch);
+                                        jPanel1.add(textFieldFilmNameAddFilmToTxtFrameSearch);
+                                        jPanel2.add(label2AddFilmToTxtFrameSearch);
+                                        jPanel2.add(textFieldFilmIdAddFilmToTxtFrameSearch);
 
-                                    buttonConfirmAddfilmToTextFrameSearch.addActionListener(new ActionListener() {
-                                        @Override
-                                        public void actionPerformed(ActionEvent e) {
-                                            for (int i = 0; i < listFilmInList.size(); i++) {
-                                                if (listFilmInList.get(i).getFilmId() == Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())) {
-                                                    JOptionPane.showConfirmDialog(null, "This movie is already existe!", "Error", JOptionPane.PLAIN_MESSAGE);
+                                        textFieldFilmNameAddFilmToTxtFrameSearch.setEditable(true);
+                                        textFieldFilmIdAddFilmToTxtFrameSearch.setEditable(false);
+
+                                        JLabel label3AddFilmToTxtFrameSearch = new JLabel("Type: ");
+                                        JComboBox<String> comboBoxFilmModeAddFilmToTxtFrameSearch = new JComboBox<String>();
+                                        JButton buttonConfirmAddfilmToTextFrameSearch = new JButton("Confirm");
+                                        comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("DVD");
+                                        comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("B-ray");
+                                        comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("Digital");
+
+                                        jPanel3.add(label3AddFilmToTxtFrameSearch);
+                                        jPanel3.add(comboBoxFilmModeAddFilmToTxtFrameSearch);
+                                        jPanel3.add(buttonConfirmAddfilmToTextFrameSearch);
+
+
+                                        frameAddFilmFromSearch.add(jPanel1, BorderLayout.NORTH);
+                                        frameAddFilmFromSearch.add(jPanel2, BorderLayout.CENTER);
+                                        frameAddFilmFromSearch.add(jPanel3, BorderLayout.SOUTH);
+
+                                        buttonConfirmAddfilmToTextFrameSearch.addActionListener(new ActionListener() {
+                                            @Override
+                                            public void actionPerformed(ActionEvent e) {
+                                                for (int i = 0; i < listFilmInList.size(); i++) {
+                                                    if (listFilmInList.get(i).getFilmId() == Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())) {
+                                                        JOptionPane.showConfirmDialog(null, "This movie is already existe!", "Error", JOptionPane.PLAIN_MESSAGE);
+                                                        frameAddFilmFromSearch.setVisible(false);
+                                                        return;
+                                                    }
+                                                }
+
+
+                                                try {
+
+                                                    listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
+                                                    listFilmInList.add(new LesFilmsInList(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), searchResultFilmArrayList.get(listSearchRemote.getSelectedIndex()).release_date));
                                                     frameAddFilmFromSearch.setVisible(false);
-                                                    return;
+
+                                                    FileWriter fw = new FileWriter(absoultePath, true);
+                                                    fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," + searchResultFilmArrayList.get(listSearchRemote.getSelectedIndex()).release_date);
+                                                    fw.close();
+
+
+                                                } catch (IOException ioException) {
+                                                    ioException.printStackTrace();
                                                 }
+
                                             }
+                                        });
 
+                                    }
+                                });
 
-                                            try {
+                            } else if (response.body().getTotal_results() == 0) {
+                                JOptionPane.showMessageDialog(null, "No result!");
+                            }
 
-                                                listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
-                                                listFilmInList.add(new LesFilmsInList(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), searchResultArrayList.get(listSearchRemote.getSelectedIndex()).release_date));
-                                                frameAddFilmFromSearch.setVisible(false);
-
-                                                FileWriter fw = new FileWriter(absoultePath, true);
-                                                fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," + searchResultArrayList.get(listSearchRemote.getSelectedIndex()).release_date);
-                                                fw.close();
-
-
-                                            } catch (IOException ioException) {
-                                                ioException.printStackTrace();
-                                            }
-
-                                        }
-                                    });
-
-                                }
-                            });
-
-                        } else if (response.body().getTotal_results() == 0) {
-                            JOptionPane.showMessageDialog(null, "No result!");
                         }
 
+
+                        @Override
+                        // Invoked when a network exception occurred talking to the server or when an unexpected exception
+                        // occurred creating the request or processing the response.
+                        public void onFailure(Call<SearchMovie> call, Throwable throwable) {
+                            throwable.getMessage();
+
+                        }
+                    });
+                } else if (comboBoxSelectSearchType.getSelectedItem() == "Actor") {
+                    if (textField1.getText().length() == 0 || textField1.getText().replaceAll("\s", "") == null) {
+                        JOptionPane.showMessageDialog(null, "You must enter actor name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                        return;
                     }
+                    listModel2.removeAllElements();
+                    listModel3.removeAllElements();
+                    String str = textField1.getText();
+                    List<SearchResultActor> searchResultActors = new ArrayList<>();
+
+                    Call<SearchActor> searchActorCall = apiInterface.get_actor(utils.API_KEY, str);
+                    searchActorCall.enqueue(new Callback<SearchActor>() {
+                        @Override
+                        public void onResponse(Call<SearchActor> call, Response<SearchActor> response) {
+                            SearchActor searchActor = response.body();
+                            if (response.body() == null) {
+                                JOptionPane.showMessageDialog(null, "You must enter actor name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                                return;
+                            }
+
+                            if (response.body().getTotal_results() != 0) {
+                                JFrame frameSearch = new JFrame("Search Results Actors");
+                                frameSearch.setVisible(true);
+                                frameSearch.setDefaultCloseOperation(HIDE_ON_CLOSE);
+                                frameSearch.setSize(1000, 500);
+                                JList<ListSearchModel> listSearchRemote = new JList<>();
+                                listSearchRemote.setModel(listModel3);
 
 
-                    @Override
-                    // Invoked when a network exception occurred talking to the server or when an unexpected exception
-                    // occurred creating the request or processing the response.
-                    public void onFailure(Call<SearchMovie> call, Throwable throwable) {
-                        throwable.getMessage();
+                                JScrollPane jScrollPaneSearch = new JScrollPane(listSearchRemote);
+                                jScrollPaneSearch.setSize(600, 600);
 
-                    }
-                });
+
+                                JTextPane jTextPaneSearch = new JTextPane();
+                                jTextPaneSearch.setSize(400, 300);
+                                StyledDocument styledDocumentTextpaneSearch = jTextPaneSearch.getStyledDocument();
+                                jTextPaneSearch.setEditable(false);
+                                JScrollPane jScrollPaneTextPaneSearch = new JScrollPane(jTextPaneSearch);
+
+                                JButton jButtonSeeMasterpiece = new JButton();
+                                jButtonSeeMasterpiece.setText("See Masterpiece");
+                                jButtonSeeMasterpiece.setFont(new Font("Monaco", Font.BOLD, 20));
+
+                                JLabel jLabelPostImage = new JLabel();
+
+
+                                JPanel panelSearchCenter = new JPanel();
+                                JPanel panelSearchNorth = new JPanel();
+
+                                panelSearchCenter.add(jTextPaneSearch);
+
+                                frameSearch.add(jScrollPaneSearch, BorderLayout.NORTH);
+                                frameSearch.add(jTextPaneSearch, BorderLayout.CENTER);
+                                frameSearch.add(jLabelPostImage, BorderLayout.WEST);
+                                frameSearch.add(jButtonSeeMasterpiece, BorderLayout.SOUTH);
+
+                                List<Actor.actor_detail> listActorDetail = searchActor.getResults();
+                                // Add all movies which in results into list model to show.
+                                for (int j = 0; j < searchActor.getResults().size(); j++) {
+                                    listModel3.addElement(new ListSearchModel(listActorDetail.get(j).getName()));
+                                    searchResultActors.add(new SearchResultActor(listActorDetail.get(j).getName(), listActorDetail.get(j).getId(), listActorDetail.get(j).getKnown_for()));
+                                }
+
+                                listSearchRemote.addListSelectionListener(new ListSelectionListener() {
+                                    @Override
+                                    public void valueChanged(ListSelectionEvent e) {
+
+                                        // Get the value only when the left key is released.
+                                        if (e.getValueIsAdjusting()) {
+                                            return;
+                                        }
+                                        jTextPaneSearch.setText(null);
+                                        jLabelPostImage.setText(null);
+                                        jLabelPostImage.setIcon(null);
+                                        System.out.println(listSearchRemote.getSelectedIndex() + " has been selected!");
+//                                    search_result search_result_index = search_resultArrayList.get(list_search.getSelectedIndex());
+
+                                        // Instantiate the movie info which selected.
+                                        SearchResultActor searchResultActorSelect = searchResultActors.get(0);
+                                        try {
+                                            searchResultActorSelect = searchResultActors.get(listSearchRemote.getSelectedIndex());
+                                        } catch (Exception exception) {
+                                            exception.printStackTrace();
+                                        }
+
+                                        int searchResultActorId = searchResultActorSelect.iddeactor;
+                                        String searchResultActorName = searchResultActorSelect.nomdeactor;
+                                        List<Movie.movie_detail> searchResultMasterPeace = searchResultActorSelect.actorMasterPeaceList;
+
+                                        // Use the movie id which we got to get movie info.
+                                        Call<Actor.actor_detail> callActorDetail = apiInterface.get_actor_by_id(searchResultActorId, utils.API_KEY);
+
+                                        callActorDetail.enqueue(new Callback<Actor.actor_detail>() {
+                                            @Override
+                                            public void onResponse(Call<Actor.actor_detail> call, Response<Actor.actor_detail> response) {
+                                                Actor.actor_detail actor_detail = response.body();
+
+
+                                                SimpleAttributeSet attributeSetTitle = new SimpleAttributeSet();
+                                                StyleConstants.setBold(attributeSetTitle, true);
+                                                StyleConstants.setFontSize(attributeSetTitle, 30);
+
+                                                BufferedImage bufferedImageIcon = null;
+                                                try {
+                                                    bufferedImageIcon = ImageIO.read(new URL("https://image.tmdb.org/t/p/w200" + actor_detail.getProfile_path()));
+                                                    ImageIcon imageIcon = new ImageIcon(bufferedImageIcon);
+                                                    jLabelPostImage.setIcon(imageIcon);
+
+                                                } catch (IOException ioException) {
+//                                                ioException.printStackTrace();
+                                                    jLabelPostImage.setText("This actor has no post image");
+                                                }
+
+
+//                                            Edit Search Text Pane
+
+
+                                                try {
+                                                    styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), actor_detail.getName(), attributeSetTitle);
+                                                    styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\nBirthday: " + actor_detail.getBirthday() + " to " + actor_detail.getDeathday(), null);
+                                                    styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\n\nBiography:  " + actor_detail.getBiography(), null);
+                                                    styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\n\nPlace of birth: " + actor_detail.getPlace_of_birth(), null);
+                                                    styledDocumentTextpaneSearch.insertString(styledDocumentTextpaneSearch.getLength(), "\nPopularity: " + actor_detail.getPopularity(), null);
+                                                } catch (BadLocationException badLocationException) {
+                                                    badLocationException.printStackTrace();
+                                                }
+
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<Actor.actor_detail> call, Throwable throwable) {
+                                                JOptionPane.showMessageDialog(null, "You must enter actor name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                        });
+
+
+                                    }
+
+                                });
+
+                                jButtonSeeMasterpiece.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        System.out.println("Film Name: " + searchResultActors.get(listSearchRemote.getSelectedIndex()).getActorMasterPeaceList().get(0).getTitle());
+                                        // Instantiate new frame for search results.
+
+                                        listModel4.removeAllElements();
+                                        JFrame frameSearchMasterPeace = new JFrame("Search Results");
+                                        frameSearchMasterPeace.setVisible(true);
+                                        frameSearchMasterPeace.setDefaultCloseOperation(HIDE_ON_CLOSE);
+                                        frameSearchMasterPeace.setSize(700, 500);
+                                        JList<ListSearchModel> listSearchRemoteMasterPeace = new JList<>();
+                                        listSearchRemoteMasterPeace.setModel(listModel4);
+
+
+                                        JScrollPane jScrollPaneSearchMasterPeace = new JScrollPane(listSearchRemoteMasterPeace);
+                                        jScrollPaneSearchMasterPeace.setSize(600, 600);
+
+
+                                        JTextPane jTextPaneSearchMasterPeace = new JTextPane();
+                                        jTextPaneSearchMasterPeace.setSize(400, 300);
+                                        StyledDocument styledDocumentTextpaneSearchMasterPeace = jTextPaneSearchMasterPeace.getStyledDocument();
+                                        jTextPaneSearchMasterPeace.setEditable(false);
+                                        JScrollPane jScrollPaneTextPaneSearchMasterPeace = new JScrollPane(jTextPaneSearchMasterPeace);
+
+                                        JButton jButtonAddToList = new JButton();
+                                        jButtonAddToList.setText("Add To Library");
+                                        jButtonAddToList.setFont(new Font("Monaco", Font.BOLD, 20));
+
+                                        JLabel jLabelPostImageMasterPeace = new JLabel();
+
+
+                                        JPanel panelSearchCenterMasterPeace = new JPanel();
+                                        JPanel panelSearchNorthMasterPeace = new JPanel();
+
+                                        panelSearchCenterMasterPeace.add(jTextPaneSearchMasterPeace);
+
+
+
+                                        frameSearchMasterPeace.add(jScrollPaneSearchMasterPeace, BorderLayout.NORTH);
+                                        frameSearchMasterPeace.add(jTextPaneSearchMasterPeace, BorderLayout.CENTER);
+                                        frameSearchMasterPeace.add(jLabelPostImageMasterPeace, BorderLayout.WEST);
+                                        frameSearchMasterPeace.add(jButtonAddToList, BorderLayout.SOUTH);
+
+                                        List<SearchResultFilm> searchResultFilmArrayList = new ArrayList<>();
+
+                                        System.out.println(listSearchRemote.getSelectedIndex());
+//                                        List<Movie.movie_detail> listMovieDetail = searchResultActors.get(listSearchRemote.getSelectedIndex()).getActorMasterPeaceList();
+
+                                        // Add all movies which in results into list model to show.
+                                        for (int j = 0; j < searchResultActors.get(listSearchRemote.getSelectedIndex()).getActorMasterPeaceList().size(); j++) {
+                                            listModel4.addElement(new ListSearchModel(searchResultActors.get(listSearchRemote.getSelectedIndex()).getActorMasterPeaceList().get(j).getTitle()));
+                                            searchResultFilmArrayList.add(new SearchResultFilm(searchResultActors.get(listSearchRemote.getSelectedIndex()).getActorMasterPeaceList().get(j).getTitle(), searchResultActors.get(listSearchRemote.getSelectedIndex()).getActorMasterPeaceList().get(j).getId(), searchResultActors.get(listSearchRemote.getSelectedIndex()).getActorMasterPeaceList().get(j).getRelease_date()));
+                                            for (int a = 0; a < listFilmInList.toArray().length; a++) {
+                                                if (listFilmInList.get(a).getNomdefilm().equals(searchResultActors.get(listSearchRemote.getSelectedIndex()).getActorMasterPeaceList().get(j).getTitle())) {
+                                                    listModel4.setElementAt(new ListSearchModel(searchResultActors.get(listSearchRemote.getSelectedIndex()).getActorMasterPeaceList().get(j).getTitle() + "  | Already In Library!"), j);
+                                                }
+                                            }
+                                        }
+
+
+                                        // Add selection listener to catch if the movie is selected.
+                                        listSearchRemoteMasterPeace.addListSelectionListener(new ListSelectionListener() {
+                                            @Override
+                                            public void valueChanged(ListSelectionEvent e) {
+
+                                                // Get the value only when the left key is released.
+                                                if (e.getValueIsAdjusting()) {
+                                                    return;
+                                                }
+                                                jTextPaneSearchMasterPeace.setText(null);
+                                                jLabelPostImageMasterPeace.setText(null);
+                                                jLabelPostImageMasterPeace.setIcon(null);
+                                                System.out.println(listSearchRemoteMasterPeace.getSelectedIndex() + " has been selected!");
+//                                    search_result search_result_index = search_resultArrayList.get(list_search.getSelectedIndex());
+
+                                                // Instantiate the movie info which selected.
+                                                SearchResultFilm searchResultFilmSelect = searchResultFilmArrayList.get(0);
+                                                try {
+                                                    searchResultFilmSelect = searchResultFilmArrayList.get(listSearchRemoteMasterPeace.getSelectedIndex());
+                                                } catch (Exception exception) {
+                                                    exception.printStackTrace();
+                                                }
+
+                                                int searchResultFilmId = searchResultFilmSelect.iddefilm;
+                                                String searchResultFilmNom = searchResultFilmSelect.nomdefilm;
+
+                                                // Use the movie id which we got to get movie info.
+                                                Call<Movie.movie_detail> callMovieDetail = apiInterface.get_movie_by_id(searchResultFilmId, utils.API_KEY);
+
+                                                callMovieDetail.enqueue(new Callback<Movie.movie_detail>() {
+                                                    @Override
+                                                    public void onResponse(Call<Movie.movie_detail> call, Response<Movie.movie_detail> response) {
+                                                        Movie.movie_detail movieDetail = response.body();
+
+                                                        SimpleAttributeSet attributeSetTitle = new SimpleAttributeSet();
+                                                        StyleConstants.setBold(attributeSetTitle, true);
+                                                        StyleConstants.setFontSize(attributeSetTitle, 30);
+
+                                                        BufferedImage bufferedImageIcon = null;
+                                                        try {
+                                                            bufferedImageIcon = ImageIO.read(new URL("https://image.tmdb.org/t/p/w200" + movieDetail.getPoster_path()));
+                                                            ImageIcon imageIcon = new ImageIcon(bufferedImageIcon);
+                                                            jLabelPostImageMasterPeace.setIcon(imageIcon);
+
+                                                        } catch (IOException ioException) {
+//                                                ioException.printStackTrace();
+                                                            jLabelPostImageMasterPeace.setText("This movie has no post image");
+                                                        }
+
+
+//                                            Edit Search Text Pane
+
+
+                                                        try {
+                                                            styledDocumentTextpaneSearchMasterPeace.insertString(styledDocumentTextpaneSearchMasterPeace.getLength(), movieDetail.getTitle(), attributeSetTitle);
+                                                            styledDocumentTextpaneSearchMasterPeace.insertString(styledDocumentTextpaneSearchMasterPeace.getLength(), "\nReleased date: " + movieDetail.getRelease_date() + "\nGenres: ", null);
+                                                            for (int k = 0; k < movieDetail.getGenres().size(); k++) {
+                                                                styledDocumentTextpaneSearchMasterPeace.insertString(styledDocumentTextpaneSearchMasterPeace.getLength(), movieDetail.getGenres().get(k).getName() + "  ", null);
+                                                            }
+                                                            styledDocumentTextpaneSearchMasterPeace.insertString(styledDocumentTextpaneSearchMasterPeace.getLength(), "\n\nAbstract:  " + movieDetail.getOverview(), null);
+                                                            styledDocumentTextpaneSearchMasterPeace.insertString(styledDocumentTextpaneSearchMasterPeace.getLength(), "\n\nRun time: " + movieDetail.getRuntime() + "min", null);
+                                                            styledDocumentTextpaneSearchMasterPeace.insertString(styledDocumentTextpaneSearchMasterPeace.getLength(), "\nMark: " + movieDetail.getVote_average() + "/10", null);
+                                                        } catch (BadLocationException badLocationException) {
+                                                            badLocationException.printStackTrace();
+                                                        }
+                                                    }
+
+
+                                                    @Override
+                                                    public void onFailure(Call<Movie.movie_detail> call, Throwable throwable) {
+                                                        JOptionPane.showMessageDialog(null, "You must enter film name!", "ERROR", JOptionPane.PLAIN_MESSAGE);
+                                                    }
+                                                });
+                                            }
+                                        });
+
+                                        // Add action listener to catch if the button is clicked.
+                                        jButtonAddToList.addActionListener(new ActionListener() {
+                                            @Override
+                                            public void actionPerformed(ActionEvent e) {
+
+                                                System.out.println("Film: " + searchResultFilmArrayList.get(listSearchRemoteMasterPeace.getSelectedIndex()).nomdefilm);
+                                                System.out.println("Film ID:" + searchResultFilmArrayList.get(listSearchRemoteMasterPeace.getSelectedIndex()).iddefilm);
+
+                                                JFrame frameAddFilmFromSearch = new JFrame("Add Film From Search");
+                                                frameAddFilmFromSearch.setVisible(true);
+                                                frameAddFilmFromSearch.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+
+                                                JPanel jPanel1 = new JPanel();
+                                                JPanel jPanel3 = new JPanel();
+                                                JPanel jPanel2 = new JPanel();
+
+
+                                                frameAddFilmFromSearch.setSize(500, 200);
+
+                                                JLabel label1AddFilmToTxtFrameSearch = new JLabel("Name: ");
+                                                JTextField textFieldFilmNameAddFilmToTxtFrameSearch = new JTextField(10);
+                                                textFieldFilmNameAddFilmToTxtFrameSearch.setText(searchResultFilmArrayList.get(listSearchRemoteMasterPeace.getSelectedIndex()).nomdefilm);
+                                                JLabel label2AddFilmToTxtFrameSearch = new JLabel("ID:   ");
+                                                JTextField textFieldFilmIdAddFilmToTxtFrameSearch = new JTextField(10);
+                                                textFieldFilmIdAddFilmToTxtFrameSearch.setText(String.valueOf(searchResultFilmArrayList.get(listSearchRemoteMasterPeace.getSelectedIndex()).iddefilm));
+                                                textFieldFilmNameAddFilmToTxtFrameSearch.setSize(300, -1);
+
+
+                                                jPanel1.add(label1AddFilmToTxtFrameSearch);
+                                                jPanel1.add(textFieldFilmNameAddFilmToTxtFrameSearch);
+                                                jPanel2.add(label2AddFilmToTxtFrameSearch);
+                                                jPanel2.add(textFieldFilmIdAddFilmToTxtFrameSearch);
+
+                                                textFieldFilmNameAddFilmToTxtFrameSearch.setEditable(true);
+                                                textFieldFilmIdAddFilmToTxtFrameSearch.setEditable(false);
+
+                                                JLabel label3AddFilmToTxtFrameSearch = new JLabel("Type: ");
+                                                JComboBox<String> comboBoxFilmModeAddFilmToTxtFrameSearch = new JComboBox<String>();
+                                                JButton buttonConfirmAddfilmToTextFrameSearch = new JButton("Confirm");
+                                                comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("DVD");
+                                                comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("B-ray");
+                                                comboBoxFilmModeAddFilmToTxtFrameSearch.addItem("Digital");
+
+                                                jPanel3.add(label3AddFilmToTxtFrameSearch);
+                                                jPanel3.add(comboBoxFilmModeAddFilmToTxtFrameSearch);
+                                                jPanel3.add(buttonConfirmAddfilmToTextFrameSearch);
+
+
+                                                frameAddFilmFromSearch.add(jPanel1, BorderLayout.NORTH);
+                                                frameAddFilmFromSearch.add(jPanel2, BorderLayout.CENTER);
+                                                frameAddFilmFromSearch.add(jPanel3, BorderLayout.SOUTH);
+
+                                                buttonConfirmAddfilmToTextFrameSearch.addActionListener(new ActionListener() {
+                                                    @Override
+                                                    public void actionPerformed(ActionEvent e) {
+                                                        for (int i = 0; i < listFilmInList.size(); i++) {
+                                                            if (listFilmInList.get(i).getFilmId() == Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText())) {
+                                                                JOptionPane.showConfirmDialog(null, "This movie is already existe!", "Error", JOptionPane.PLAIN_MESSAGE);
+                                                                frameAddFilmFromSearch.setVisible(false);
+                                                                return;
+                                                            }
+                                                        }
+
+
+                                                        try {
+
+                                                            listModel.addElement(new ListModelElement(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString()));
+                                                            listFilmInList.add(new LesFilmsInList(textFieldFilmNameAddFilmToTxtFrameSearch.getText(), comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString(), Integer.valueOf(textFieldFilmIdAddFilmToTxtFrameSearch.getText()), searchResultFilmArrayList.get(listSearchRemoteMasterPeace.getSelectedIndex()).release_date));
+                                                            frameAddFilmFromSearch.setVisible(false);
+
+                                                            FileWriter fw = new FileWriter(absoultePath, true);
+                                                            fw.write("\n" + textFieldFilmNameAddFilmToTxtFrameSearch.getText() + "," + comboBoxFilmModeAddFilmToTxtFrameSearch.getSelectedItem().toString() + "," + textFieldFilmIdAddFilmToTxtFrameSearch.getText() + "," + searchResultFilmArrayList.get(listSearchRemoteMasterPeace.getSelectedIndex()).release_date);
+                                                            fw.close();
+
+
+                                                        } catch (IOException ioException) {
+                                                            ioException.printStackTrace();
+                                                        }
+
+                                                    }
+                                                });
+
+                                            }
+                                        });
+
+                                    }
+                                });
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SearchActor> call, Throwable t) {
+
+                        }
+                    });
+                }
+
             }
         });
 //
@@ -938,11 +1318,11 @@ public class IhmMain extends JFrame {
         }
     }
 
-    public class ListFilmSearchModel {
+    public class ListSearchModel {
         String nomdefilm;
 
 
-        public ListFilmSearchModel(String nomdefilm) {
+        public ListSearchModel(String nomdefilm) {
             this.nomdefilm = nomdefilm;
 
         }
@@ -963,12 +1343,12 @@ public class IhmMain extends JFrame {
     }
 
 
-    public class SearchResult {
+    public class SearchResultFilm {
         String nomdefilm;
         int iddefilm;
         String release_date;
 
-        public SearchResult(String nomdefilm, int iddefilm, String release_date) {
+        public SearchResultFilm(String nomdefilm, int iddefilm, String release_date) {
             this.nomdefilm = nomdefilm;
             this.iddefilm = iddefilm;
             this.release_date = release_date;
@@ -1001,6 +1381,68 @@ public class IhmMain extends JFrame {
         @Override
         public String toString() {
             return nomdefilm + '\n' + iddefilm;
+        }
+    }
+
+    public class ActorMasterPeace {
+        String nomdefilm;
+        int iddefilm;
+
+        public ActorMasterPeace(String nomdefilm, int iddefilm) {
+            this.nomdefilm = nomdefilm;
+            this.iddefilm = iddefilm;
+        }
+
+        public String getNomdefilm() {
+            return nomdefilm;
+        }
+
+        public void setNomdefilm(String nomdefilm) {
+            this.nomdefilm = nomdefilm;
+        }
+
+        public int getIddefilm() {
+            return iddefilm;
+        }
+
+        public void setIddefilm(int iddefilm) {
+            this.iddefilm = iddefilm;
+        }
+    }
+
+    public class SearchResultActor {
+        String nomdeactor;
+        int iddeactor;
+        List<Movie.movie_detail> actorMasterPeaceList;
+
+        public SearchResultActor(String nomdeactor, int iddeactor, List<Movie.movie_detail> actorMasterPeaceList) {
+            this.nomdeactor = nomdeactor;
+            this.iddeactor = iddeactor;
+            this.actorMasterPeaceList = actorMasterPeaceList;
+        }
+
+        public String getNomdeactor() {
+            return nomdeactor;
+        }
+
+        public void setNomdeactor(String nomdeactor) {
+            this.nomdeactor = nomdeactor;
+        }
+
+        public int getIddeactor() {
+            return iddeactor;
+        }
+
+        public void setIddeactor(int iddeactor) {
+            this.iddeactor = iddeactor;
+        }
+
+        public List<Movie.movie_detail> getActorMasterPeaceList() {
+            return actorMasterPeaceList;
+        }
+
+        public void setActorMasterPeaceList(List<Movie.movie_detail> actorMasterPeaceList) {
+            this.actorMasterPeaceList = actorMasterPeaceList;
         }
     }
 
