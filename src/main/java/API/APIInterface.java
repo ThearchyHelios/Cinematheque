@@ -2,6 +2,7 @@ package API;
 
 import Search.SearchActor;
 import Search.SearchMovie;
+import Search.SearchMovieByPersonID;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import Module.Movie;
@@ -46,6 +47,12 @@ public interface APIInterface {
     Call<Actor.actor_detail> get_actor_by_id(
             @Path("person_id") int personID,
             @Query(value = "api_key", encoded = true) String apikey
+    );
+
+    @GET("3/person/{person_id}/movie_credits")
+    Call<SearchMovieByPersonID> get_movies_by_person_id(
+            @Path("person_id") int personID,
+            @Query(value = "api_key", encoded = true) String apiKey
     );
 
 }
