@@ -529,7 +529,7 @@ public class IhmMain extends JFrame {
                                     listModel2.addElement(new ListSearchModel(listMovieDetail.get(j).getTitle()));
                                     searchResultFilmArrayList.add(new SearchResultFilm(listMovieDetail.get(j).getTitle(), listMovieDetail.get(j).getId(), listMovieDetail.get(j).getRelease_date()));
                                     for (int a = 0; a < listFilmInList.toArray().length; a++) {
-                                        if (listFilmInList.get(a).getNomdefilm().equals(listMovieDetail.get(j).getTitle())) {
+                                        if (listFilmInList.get(a).getFilmId() == listMovieDetail.get(j).getId()) {
                                             listModel2.setElementAt(new ListSearchModel(listMovieDetail.get(j).getTitle() + "  | Already In Library!"), j);
                                         }
                                     }
@@ -912,7 +912,7 @@ public class IhmMain extends JFrame {
                                                     listModel4.addElement(new ListSearchModel(listMovieDetailByPersonID.get(j).getTitle()));
                                                     searchResultFilmArrayList.add(new SearchResultFilm(listMovieDetailByPersonID.get(j).getTitle(), listMovieDetailByPersonID.get(j).getId(), listMovieDetailByPersonID.get(j).getRelease_date()));
                                                     for (int a = 0; a < listFilmInList.toArray().length; a++) {
-                                                        if (listFilmInList.get(a).getNomdefilm().equals(listMovieDetailByPersonID.get(j).getTitle())) {
+                                                        if (listFilmInList.get(a).getFilmId() == listMovieDetailByPersonID.get(j).getId()) {
                                                             listModel4.setElementAt(new ListSearchModel(listMovieDetailByPersonID.get(j).getTitle() + "  | Already In Library!"), j);
                                                         }
                                                     }
